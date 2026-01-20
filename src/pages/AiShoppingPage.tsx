@@ -439,8 +439,8 @@ export default function AiShoppingPage() {
           </div>
 
           {/* Description section */}
-          <div className="mt-16 pt-6 border-t border-gray-200">
-            <div className="px-6">
+          <div className="mt-16 border-t border-gray-200">
+            <div className="">
               <h2 className="text-5xl font-serif text-center text-gray-900 mt-6 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>Description</h2>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
@@ -466,7 +466,7 @@ export default function AiShoppingPage() {
           </div>
 
           {/* Ingredients section */}
-          <div className="mt-16 pt-6 border-t border-gray-200">
+          <div className="mt-16 border-t border-gray-200">
             <div className="">
               <h2 className="text-5xl font-serif text-center text-gray-900 mt-6 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>Ingredients</h2>
               
@@ -658,7 +658,7 @@ export default function AiShoppingPage() {
 
       {/* Product Feature Section */}
       <div className="bg-white">
-        <div className="max-w-7xl mx-auto py-12">
+        <div className="max-w-7xl mx-auto py-2">
           <div className="mt-16 pt-6 border-t border-gray-200">
             <div className="">
               <div className="flex items-center justify-center gap-4 mb-6">
