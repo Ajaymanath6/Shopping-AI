@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import SmartSuggestOrb from '../components/SmartSuggestOrb'
 import ProductOrb from '../components/ProductOrb'
 import Badge from '../components/Badge'
-import { RiArrowLeftLine, RiTruckLine, RiArrowGoBackLine, RiPlantLine } from '@remixicon/react'
+import { RiTruckLine, RiArrowGoBackLine, RiPlantLine } from '@remixicon/react'
 
 export default function AiShoppingPage() {
   const [showOrb, setShowOrb] = useState(false)
@@ -142,33 +142,6 @@ export default function AiShoppingPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => {
-                try {
-                  window.history.back()
-                } catch {
-                  window.location.href = '/'
-                }
-              }}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-            >
-              <RiArrowLeftLine size={20} className="text-gray-600" />
-            </button>
-            <div>
-              <h1 className="text-xl font-semibold text-gray-900">AI Shopping Assistant</h1>
-              <p className="text-sm text-gray-500">Powered by Shopos AI</p>
-            </div>
-          </div>
-          <div className="text-sm text-gray-500">
-            Personalized for Kerala, India
-          </div>
-        </div>
-      </div>
-
       {/* Navigation breadcrumb */}
       <div className="bg-white px-6 py-3 border-b border-gray-100">
         <div className="max-w-7xl mx-auto">
