@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import SmartSuggestOrb from '../components/SmartSuggestOrb'
 import ProductOrb from '../components/ProductOrb'
 import Badge from '../components/Badge'
-import { RiTruckLine, RiArrowGoBackLine, RiPlantLine, RiNumber1, RiNumber2, RiNumber3, RiNumber4, RiNumber5 } from '@remixicon/react'
+import { RiTruckLine, RiArrowGoBackLine, RiPlantLine } from '@remixicon/react'
 
 export default function AiShoppingPage() {
   const [showOrb, setShowOrb] = useState(false)
@@ -438,11 +438,11 @@ export default function AiShoppingPage() {
             <div className="p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Ingredients</h2>
               
-              <div className="w-full">
+              <div className="flex justify-center">
                 <img 
                   src="/asambalend.png"
                   alt="Assam Breakfast Blend Ingredients"
-                  className="w-full h-auto rounded-lg object-cover"
+                  className="max-w-md w-full h-auto rounded-lg object-cover"
                 />
               </div>
             </div>
@@ -468,8 +468,12 @@ export default function AiShoppingPage() {
                   <div className="space-y-6">
                     {/* Step 1 */}
                     <div className="flex gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
-                        <RiNumber1 size={20} />
+                      <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+                        <img 
+                          src="https://in.teabox.com/cdn/shop/files/Step_1.svg?v=1710581456"
+                          alt="Step 1"
+                          className="w-16 h-16"
+                        />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">Boil Water</h3>
@@ -479,8 +483,12 @@ export default function AiShoppingPage() {
                     
                     {/* Step 2 */}
                     <div className="flex gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
-                        <RiNumber2 size={20} />
+                      <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+                        <img 
+                          src="https://in.teabox.com/cdn/shop/files/Step_2.svg?v=1710581558"
+                          alt="Step 2"
+                          className="w-16 h-16"
+                        />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">Add Tea & Spices</h3>
@@ -490,8 +498,12 @@ export default function AiShoppingPage() {
                     
                     {/* Step 3 */}
                     <div className="flex gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
-                        <RiNumber3 size={20} />
+                      <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+                        <img 
+                          src="https://in.teabox.com/cdn/shop/files/Step_3.svg?v=1710581672"
+                          alt="Step 3"
+                          className="w-16 h-16"
+                        />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">Simmer</h3>
@@ -501,8 +513,12 @@ export default function AiShoppingPage() {
                     
                     {/* Step 4 */}
                     <div className="flex gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
-                        <RiNumber4 size={20} />
+                      <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+                        <img 
+                          src="https://in.teabox.com/cdn/shop/files/Step_4.svg?v=1710581712"
+                          alt="Step 4"
+                          className="w-16 h-16"
+                        />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">Add Milk & Sugar</h3>
@@ -512,8 +528,12 @@ export default function AiShoppingPage() {
                     
                     {/* Step 5 */}
                     <div className="flex gap-4">
-                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
-                        <RiNumber5 size={20} />
+                      <div className="flex-shrink-0 w-16 h-16 flex items-center justify-center">
+                        <img 
+                          src="https://in.teabox.com/cdn/shop/files/Chai_Step_5.svg?v=1710581736"
+                          alt="Step 5"
+                          className="w-16 h-16"
+                        />
                       </div>
                       <div>
                         <h3 className="text-lg font-semibold text-gray-900 mb-1">Strain & Serve</h3>
