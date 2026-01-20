@@ -21,19 +21,19 @@ export default function AiShoppingPage() {
       alt: 'Earl Grey tea leaves close-up view',
       label: 'Tea Leaves',
       name: 'Golden Darjeeling Muscatel',
-      description: 'A rare first flush with notes of sweet street grapes, a joyride for your senses.',
+      description: 'A rare first flush with notes of sweet street grapes, a joyride for your senses. 3 packets in one: Golden Darjeeling, Mint Revitalizer, and Spicy Masala.',
       price: 29.99,
       originalPrice: 39.99,
       discount: 25,
       sizes: ['50g', '100g', '250g'],
       formats: ['Loose Leaf', 'Tea Bags'],
       highlights: [
+        '3-pack bundle: Golden Darjeeling, Mint Revitalizer, Spicy Masala',
         'Rare first flush Darjeeling tea leaves',
         'Sweet muscatel grape notes',
-        'Hand-picked from high altitude gardens',
-        'Available in loose leaf and tea bag formats'
+        'Hand-picked from high altitude gardens'
       ],
-      fullDescription: 'Experience the rare elegance of our Golden Darjeeling Muscatel, a first flush tea with distinctive muscatel grape notes. Hand-picked from the finest Darjeeling gardens, this tea offers a unique flavor profile that tea connoisseurs cherish.'
+      fullDescription: 'Experience the rare elegance of our Golden Darjeeling Muscatel 3-pack bundle. This special collection includes three premium teas: Golden Darjeeling Muscatel with distinctive muscatel grape notes, Mint Revitalizer Herblizer for a refreshing caffeine-free experience, and Spicy Masala Chai Concentrate for a powerful aromatic boost. Hand-picked from the finest gardens, this trio offers a unique flavor journey that tea connoisseurs cherish.'
     },
     {
       src: '/sample2.png', 
