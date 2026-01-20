@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import SmartSuggestOrb from '../components/SmartSuggestOrb'
 import ProductOrb from '../components/ProductOrb'
 import Badge from '../components/Badge'
-import { RiTruckLine, RiArrowGoBackLine, RiPlantLine } from '@remixicon/react'
+import { RiTruckLine, RiArrowGoBackLine, RiPlantLine, RiFacebookFill, RiTwitterXFill, RiInstagramFill, RiArrowRightLine } from '@remixicon/react'
 
 export default function AiShoppingPage() {
   const [showOrb, setShowOrb] = useState(false)
@@ -420,75 +420,123 @@ export default function AiShoppingPage() {
             </div>
           </div>
 
-          {/* Product description section - Unified hover area */}
-          <div className="mt-16 pt-12 border-t border-gray-200">
-            <div className="p-6">
-              <h2 className="text-3xl font-serif text-center text-gray-900 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>Description</h2>
+          {/* Description section */}
+          <div className="mt-16 pt-6 border-t border-gray-200">
+            <div className="px-6">
+              <h2 className="text-5xl font-serif text-center text-gray-900 mt-6 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>Description</h2>
               
-              <div className="prose max-w-none text-gray-700">
-                <p className="mb-4">
-                  {products[selectedProductIndex].fullDescription}
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Ingredients section - Bento Box Layout */}
-          <div className="mt-16 pt-12 border-t border-gray-200">
-            <div className="p-6">
-              <h2 className="text-3xl font-serif text-center text-gray-900 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>Ingredients</h2>
-              
-              <div 
-                className="grid grid-cols-1 lg:grid-cols-2 gap-6 rounded-lg p-6"
-                style={{ 
-                  backgroundColor: 'rgba(139, 115, 85, 0.12)', // Calm brown/wood color with 12% opacity
-                }}
-              >
-                {/* Left side - Ingredients diagram */}
-                <div className="w-full overflow-hidden rounded-lg">
-                  <img 
-                    src="/asambalend.png"
-                    alt="Assam Breakfast Blend Ingredients"
-                    className="w-full h-full object-cover object-top"
-                    style={{ 
-                      objectPosition: 'top',
-                      maxHeight: '500px',
-                      objectFit: 'cover'
-                    }}
-                  />
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                {/* Left side - Text */}
+                <div className="text-left">
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-4">Mint Revitalizer Herblizer</h3>
+                  <p className="text-base text-gray-700 leading-relaxed">
+                    A refreshing, caffeine-free blend to recharge your engine. This herbal infusion combines premium mint leaves with natural herbs to create a revitalizing experience that energizes without caffeine. Perfect for any time of day, it offers a cooling sensation that refreshes your senses and provides a gentle boost of natural energy.
+                  </p>
                 </div>
                 
-                {/* Right side - Product on table */}
-                <div className="w-full overflow-hidden rounded-lg">
+                {/* Right side - Image */}
+                <div className="w-full">
                   <img 
                     src="/asam on table.png"
-                    alt="Assam Breakfast Blend on table"
-                    className="w-full h-full object-cover"
-                    style={{ 
-                      maxHeight: '500px',
-                      objectFit: 'cover'
-                    }}
+                    alt="Assam tea on table"
+                    className="w-full h-auto object-cover rounded-lg"
                   />
                 </div>
               </div>
             </div>
           </div>
 
-          {/* How to make chai section */}
+          {/* Ingredients section */}
+          <div className="mt-16 pt-6 border-t border-gray-200">
+            <div className="">
+              <h2 className="text-5xl font-serif text-center text-gray-900 mt-6 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>Ingredients</h2>
+              
+              <div className="grid grid-cols-4 gap-6">
+                {/* Col 1 - Cinnamon */}
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-24 h-24">
+                    <img 
+                      src="/patta.png"
+                      alt="Cinnamon"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Cinnamon</h3>
+                    <p className="text-sm text-gray-600">Warm and aromatic spice</p>
+                  </div>
+                </div>
+
+                {/* Col 2 - Clove */}
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-24 h-24">
+                    <img 
+                      src="/clove.png"
+                      alt="Clove"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Clove</h3>
+                    <p className="text-sm text-gray-600">Bold and pungent flavor</p>
+                  </div>
+                </div>
+
+                {/* Col 3 - Ginger */}
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-24 h-24">
+                    <img 
+                      src="/ginger.png"
+                      alt="Ginger"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Ginger</h3>
+                    <p className="text-sm text-gray-600">Spicy and invigorating root</p>
+                  </div>
+                </div>
+
+                {/* Col 4 - Cardamom */}
+                <div className="flex items-center gap-4">
+                  <div className="flex-shrink-0 w-24 h-24">
+                    <img 
+                      src="/cardomn.png"
+                      alt="Cardamom"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-1">Cardamom</h3>
+                    <p className="text-sm text-gray-600">Fragrant and sweet pods</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* How to make chai section - Copy 2 */}
           <div className="mt-16 pt-12 border-t border-gray-200">
-            <div className="p-6">
-              <h2 className="text-3xl font-serif text-center text-gray-900 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>How to make chai?</h2>
+            <div className="">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <h2 className="text-5xl font-serif text-center text-gray-900 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>How to make chai?</h2>
+                <img 
+                  src="/chai.png"
+                  alt="Chai tea"
+                  className="h-12 w-auto"
+                />
+              </div>
               
               <div 
-                className="grid grid-cols-1 lg:grid-cols-2 gap-8 rounded-lg p-6"
+                className="grid grid-cols-1 lg:grid-cols-2 gap-8 rounded-lg"
                 style={{ 
-                  backgroundColor: 'rgba(139, 115, 85, 0.12)', // Calm brown/wood color with 12% opacity
+                  backgroundColor: 'rgba(139, 115, 85, 0.06)', // Calm brown/wood color with 6% opacity
                 }}
               >
                 {/* Left side - Image */}
                 <div className="w-full overflow-hidden rounded-lg" style={{ height: '500px' }}>
                   <img 
-                    src="/making asam.png"
+                    src="/MAKING.svg"
                     alt="How to make Assam chai"
                     className="w-full h-full object-cover"
                     style={{ 
@@ -589,14 +637,191 @@ export default function AiShoppingPage() {
         </div>
       </div>
 
-      {/* Footer */}
-      <div className="bg-white border-t border-gray-200 px-6 py-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <p className="text-xs text-gray-500">
-            AI-powered recommendations based on your location and preferences
-          </p>
+      {/* Product Feature Section */}
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto py-12">
+          <div className="mt-16 pt-6 border-t border-gray-200">
+            <div className="">
+              <div className="flex items-center justify-center gap-4 mb-6">
+                <h2 className="text-5xl font-serif text-center text-gray-900 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>Other Products</h2>
+                <img 
+                  src="/bucket.png"
+                  alt="Tea bucket"
+                  className="h-12 w-auto"
+                />
+              </div>
+              
+              <div 
+                className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center rounded-lg p-6"
+                style={{ 
+                  backgroundColor: 'rgba(139, 115, 85, 0.03)', // Calm brown/wood color with very light opacity
+                }}
+              >
+            {/* Left side - Text (40%) */}
+            <div className="lg:col-span-2 p-6">
+              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Golden Darjeeling Muscatel</h2>
+              <p className="text-base text-gray-700 mb-6">
+                A rare first flush with notes of sweet street grapes, a joyride for your senses. 3 packets in one: Golden Darjeeling, Mint Revitalizer, and Spicy Masala.
+              </p>
+              
+              <div className="flex items-center gap-4 mb-6">
+                <span className="text-3xl font-bold text-gray-900">$29.99</span>
+                <span className="text-lg text-gray-500 line-through">$39.99</span>
+                <span className="bg-gray-100 text-gray-800 px-2 py-1 text-sm font-medium rounded">25% OFF</span>
+              </div>
+              
+              <div className="flex flex-col gap-3">
+                <button className="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors">
+                  Add to Cart
+                </button>
+                <button className="px-6 py-3 border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-lg transition-colors">
+                  Buy Now
+                </button>
+              </div>
+            </div>
+            
+            {/* Right side - Image (60%) */}
+            <div className="w-full lg:col-span-3 p-6">
+              <img 
+                src="/sample3.png"
+                alt="Golden Darjeeling Muscatel"
+                className="w-full h-auto object-cover rounded-lg"
+              />
+            </div>
+              </div>
+              
+              {/* Second Product - Swapped direction */}
+              <div 
+                className="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center rounded-lg p-6 mt-8"
+                style={{ 
+                  backgroundColor: 'rgba(139, 115, 85, 0.03)', // Calm brown/wood color with very light opacity
+                }}
+              >
+                {/* Left side - Image (60%) */}
+                <div className="w-full lg:col-span-3 p-6">
+                  <img 
+                    src="/greyandprix.png"
+                    alt="Earl Grey Grand Prix"
+                    className="w-full h-auto object-cover rounded-lg"
+                  />
+                </div>
+                
+                {/* Right side - Text (40%) */}
+                <div className="lg:col-span-2 p-6">
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Earl Grey Grand Prix</h2>
+                  <p className="text-base text-gray-700 mb-6">
+                    A high-octane blend of black tea and bergamot, built for powerful engine.
+                  </p>
+                  
+                  <div className="flex items-center gap-4 mb-6">
+                    <span className="text-3xl font-bold text-gray-900">$24.99</span>
+                    <span className="text-lg text-gray-500 line-through">$32.99</span>
+                    <span className="bg-gray-100 text-gray-800 px-2 py-1 text-sm font-medium rounded">25% OFF</span>
+                  </div>
+                  
+                  <div className="flex flex-col gap-3">
+                    <button className="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-white font-semibold rounded-lg transition-colors">
+                      Add to Cart
+                    </button>
+                    <button className="px-6 py-3 border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold rounded-lg transition-colors">
+                      Buy Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
+
+      {/* Footer */}
+      <footer className="bg-white">
+        <div className="max-w-7xl mx-auto px-6 pt-12 pb-8">
+          {/* Logo */}
+          <div className="mb-12">
+            <img 
+              src="/logofull.png" 
+              alt="teagarage" 
+              className="h-24 w-auto"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+            {/* Visit Us Section */}
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 mb-3">Visit Us</h3>
+              <div className="space-y-1.5 text-sm text-gray-700">
+                <p>teagarage</p>
+                <p>Idukki</p>
+                <p className="mt-3">Phone / Whatsapp: +91 97330 61444</p>
+                <p>Email: help@teagarage.com</p>
+              </div>
+            </div>
+
+            {/* Need Help? Section */}
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 mb-3">Need Help?</h3>
+              <ul className="space-y-1.5 text-sm text-gray-700">
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Contact Us</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Help Center</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">About teagarage</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Privacy Policy</a></li>
+              </ul>
+            </div>
+
+            {/* Shop Section */}
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 mb-3">Shop</h3>
+              <ul className="space-y-1.5 text-sm text-gray-700">
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Tea</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Trial Packs</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Teaware</a></li>
+                <li><a href="#" className="hover:text-gray-900 transition-colors">Gifts</a></li>
+              </ul>
+            </div>
+
+            {/* Let's Be Friends Section */}
+            <div>
+              <h3 className="text-base font-semibold text-gray-900 mb-3">Let's Be Friends</h3>
+              <p className="text-sm text-gray-700 mb-3">
+                Discover exclusive access to early sales, captivating offers, and tantalizing exotic tea recipes! Unsubscribe anytime
+              </p>
+              <form className="flex items-center gap-2">
+                <input
+                  type="email"
+                  placeholder="E-mail"
+                  className="flex-1 px-3 py-2 bg-gray-50 border border-gray-300 rounded text-gray-900 placeholder-gray-500 focus:outline-none focus:border-gray-500 text-sm"
+                />
+                <button
+                  type="submit"
+                  className="p-2 bg-gray-900 hover:bg-gray-800 rounded transition-colors"
+                  aria-label="Subscribe"
+                >
+                  <RiArrowRightLine size={18} className="text-white" />
+                </button>
+              </form>
+            </div>
+          </div>
+
+          {/* Bottom Section */}
+          <div className="border-t border-gray-300 pt-4 flex flex-col md:flex-row justify-between items-center gap-3">
+            <div className="flex items-center gap-3">
+              <a href="#" className="text-gray-700 hover:text-gray-900 transition-colors" aria-label="Facebook">
+                <RiFacebookFill size={20} />
+              </a>
+              <a href="#" className="text-gray-700 hover:text-gray-900 transition-colors" aria-label="Twitter">
+                <RiTwitterXFill size={20} />
+              </a>
+              <a href="#" className="text-gray-700 hover:text-gray-900 transition-colors" aria-label="Instagram">
+                <RiInstagramFill size={20} />
+              </a>
+            </div>
+            <div className="text-xs text-gray-600 text-center md:text-right">
+              <p>© 2026, teagarage. Powered by Shopify</p>
+            </div>
+          </div>
+        </div>
+      </footer>
 
       {/* Help Orb - Right Side */}
       {showHelpOrb && !showOrb && (
