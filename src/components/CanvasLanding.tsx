@@ -1131,8 +1131,8 @@ export default function CanvasLanding() {
       }
     } else if (taskId === 'abandoned-cart') {
       // Open AI Shopping Assistant in new tab
-      const basename = import.meta.env.PROD ? '/shopos' : ''
-      const newWindow = window.open(`${basename}/ai-shopping`, '_blank')
+      // For Vercel: use root path, no basename needed
+      const newWindow = window.open('/ai-shopping', '_blank')
       if (newWindow) {
         newWindow.focus()
       }
