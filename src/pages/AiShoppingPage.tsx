@@ -14,32 +14,88 @@ export default function AiShoppingPage() {
   const [helpOrbExpanded, setHelpOrbExpanded] = useState(false)
   const idleTimerRef = useRef<number | null>(null)
   
-  // Product images
-  const productImages = [
+  // Product data with all details for each product
+  const products = [
     {
       src: '/sample3.png',
       alt: 'Earl Grey tea leaves close-up view',
-      label: 'Tea Leaves'
+      label: 'Tea Leaves',
+      name: 'Golden Darjeeling Muscatel',
+      description: 'A rare first flush with notes of sweet street grapes, a joyride for your senses.',
+      price: 29.99,
+      originalPrice: 39.99,
+      discount: 25,
+      sizes: ['50g', '100g', '250g'],
+      formats: ['Loose Leaf', 'Tea Bags'],
+      highlights: [
+        'Rare first flush Darjeeling tea leaves',
+        'Sweet muscatel grape notes',
+        'Hand-picked from high altitude gardens',
+        'Available in loose leaf and tea bag formats'
+      ],
+      fullDescription: 'Experience the rare elegance of our Golden Darjeeling Muscatel, a first flush tea with distinctive muscatel grape notes. Hand-picked from the finest Darjeeling gardens, this tea offers a unique flavor profile that tea connoisseurs cherish.'
     },
     {
       src: '/sample2.png', 
       alt: 'Brewed Earl Grey tea in elegant cup',
-      label: 'Brewed Tea'
+      label: 'Brewed Tea',
+      name: 'Mint Revitalizer Herblizer',
+      description: 'A refreshing, caffeine-free blend to recharge your engine.',
+      price: 19.99,
+      originalPrice: 24.99,
+      discount: 20,
+      sizes: ['50g', '100g', '200g'],
+      formats: ['Herbal Infusion', 'Tea Bags'],
+      highlights: [
+        'Caffeine-free herbal blend',
+        'Refreshing mint flavor',
+        'Natural herbal ingredients',
+        'Perfect for any time of day'
+      ],
+      fullDescription: 'Recharge your engine with our Mint Revitalizer Herblizer, a refreshing caffeine-free herbal infusion. This blend combines premium mint leaves with other natural herbs to create a revitalizing experience that energizes without caffeine.'
     },
     {
       src: '/sample.png',
       alt: 'Premium tea packaging and bergamot',
-      label: 'Packaging'
+      label: 'Packaging',
+      name: 'Spicy Masala Chai Concentrate',
+      description: 'A spicy, aromatic blend for a powerful boost.',
+      price: 22.99,
+      originalPrice: 28.99,
+      discount: 21,
+      sizes: ['100g', '200g', '500g'],
+      formats: ['Concentrate', 'Tea Bags'],
+      highlights: [
+        'Spicy masala blend',
+        'Aromatic chai spices',
+        'Concentrated flavor',
+        'Perfect for traditional chai'
+      ],
+      fullDescription: 'Fuel your day with our Spicy Masala Chai Concentrate, a powerful blend of aromatic spices and premium tea. This concentrated mix delivers the authentic taste of traditional Indian masala chai, perfect for those who love bold, spicy flavors.'
     },
     {
       src: '/greyandprix.png',
       alt: 'Tea ceremony setup with Earl Grey',
-      label: 'Tea Setup'
+      label: 'Tea Setup',
+      name: 'Earl Grey Grand Prix',
+      description: 'A high-octane blend of black tea and bergamot, built for powerful engine.',
+      price: 24.99,
+      originalPrice: 32.99,
+      discount: 25,
+      sizes: ['50g', '100g', '250g'],
+      formats: ['Loose Leaf', 'Tea Bags'],
+      highlights: [
+        'Premium Earl Grey tea blend with bergamot oil',
+        'Hand-picked Ceylon black tea leaves',
+        'Natural bergamot flavoring from Italian citrus',
+        'Available in loose leaf and tea bag formats'
+      ],
+      fullDescription: 'Experience the timeless elegance of our Premium Earl Grey Tea, carefully crafted from the finest Ceylon black tea leaves and infused with authentic bergamot oil from Italian citrus groves. This classic English blend delivers a perfect balance of robust tea flavor and delicate citrus aromatics.'
     }
   ]
   
-  // Selected main image state - default to first image
-  const [selectedImageIndex, setSelectedImageIndex] = useState(3) // Start with greyandprix.png
+  // Selected product state - default to Earl Grey Grand Prix
+  const [selectedProductIndex, setSelectedProductIndex] = useState(3)
   
   // Section orbs temporarily removed - see SECTION_ORBS_BACKUP.md
 
@@ -195,8 +251,8 @@ export default function AiShoppingPage() {
                   onMouseLeave={handleProductImageLeave}
                 >
                   <img 
-                    src={productImages[selectedImageIndex].src}
-                    alt={productImages[selectedImageIndex].alt}
+                    src={products[selectedProductIndex].src}
+                    alt={products[selectedProductIndex].alt}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                   
@@ -210,28 +266,28 @@ export default function AiShoppingPage() {
                 
                 {/* Thumbnail images */}
                 <div className="grid grid-cols-4 gap-3">
-                  {productImages.map((image, idx) => (
+                  {products.map((product, idx) => (
                     <button 
                       key={idx} 
-                      onClick={() => setSelectedImageIndex(idx)}
+                      onClick={() => setSelectedProductIndex(idx)}
                       className={`aspect-square bg-gray-100 rounded-lg overflow-hidden transition-all group relative ${
-                        selectedImageIndex === idx 
+                        selectedProductIndex === idx 
                           ? 'ring-2 ring-gray-800' 
                           : 'hover:ring-2 hover:ring-gray-300'
                       }`}
                       onMouseEnter={handleProductImageHover}
                       onMouseLeave={handleProductImageLeave}
-                      title={image.label}
+                      title={product.label}
                     >
                       <img 
-                        src={image.src} 
-                        alt={image.alt}
+                        src={product.src} 
+                        alt={product.alt}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         onError={(e) => {
                           // Fallback placeholder if image fails to load
                           const target = e.target as HTMLImageElement;
                           target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjNmNGY2Ii8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtZmFtaWx5PSJBcmlhbCwgc2Fucy1zZXJpZiIgZm9udC1zaXplPSIxNCIgZmlsbD0iIzZiNzI4MCIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZHk9Ii4zZW0iPkVhcmwgR3JleSBUZWE8L3RleHQ+PC9zdmc+';
-                          target.alt = `${image.label} - Earl Grey Tea`;
+                          target.alt = `${product.label} - Tea`;
                         }}
                         loading="lazy"
                       />
@@ -239,7 +295,7 @@ export default function AiShoppingPage() {
                       {/* Subtle label overlay on hover */}
                       <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                         <div className="p-2">
-                          <span className="text-white text-xs font-medium">{image.label}</span>
+                          <span className="text-white text-xs font-medium">{product.label}</span>
                         </div>
                       </div>
                     </button>
@@ -252,12 +308,12 @@ export default function AiShoppingPage() {
             <div className="lg:col-span-5 space-y-6">
               {/* Product title and price */}
               <div className="p-4">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">Premium Earl Grey Tea</h1>
-                <p className="text-sm text-gray-600 mb-4">Organic Ceylon black tea with natural bergamot</p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">{products[selectedProductIndex].name}</h1>
+                <p className="text-sm text-gray-600 mb-4">{products[selectedProductIndex].description}</p>
                 <div className="flex items-center gap-4 mb-6">
-                  <span className="text-3xl font-bold text-gray-900">$24.99</span>
-                  <span className="text-lg text-gray-500 line-through">$32.99</span>
-                  <Badge variant="warning" className="bg-gray-100 text-gray-800 px-2 py-1 text-xs">25% OFF</Badge>
+                  <span className="text-3xl font-bold text-gray-900">${products[selectedProductIndex].price.toFixed(2)}</span>
+                  <span className="text-lg text-gray-500 line-through">${products[selectedProductIndex].originalPrice.toFixed(2)}</span>
+                  <Badge variant="warning" className="bg-gray-100 text-gray-800 px-2 py-1 text-xs">{products[selectedProductIndex].discount}% OFF</Badge>
                 </div>
               </div>
 
@@ -268,8 +324,8 @@ export default function AiShoppingPage() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Size</label>
-                    <div className="grid grid-cols-3 gap-2">
-                      {['50g', '100g', '250g'].map((size, idx) => (
+                    <div className={`grid gap-2 ${products[selectedProductIndex].sizes.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+                      {products[selectedProductIndex].sizes.map((size, idx) => (
                         <button 
                           key={size} 
                           className={`p-3 border rounded-lg text-sm font-medium transition-colors ${
@@ -285,7 +341,7 @@ export default function AiShoppingPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Format</label>
                     <div className="grid grid-cols-2 gap-2">
-                      {['Loose Leaf', 'Tea Bags'].map((format, idx) => (
+                      {products[selectedProductIndex].formats.map((format, idx) => (
                         <button 
                           key={format} 
                           className={`p-3 border rounded-lg text-sm font-medium transition-colors ${
@@ -316,7 +372,7 @@ export default function AiShoppingPage() {
                 
                 <div className="space-y-3">
                   <button className="w-full py-3 text-lg font-semibold bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
-                    Add to Cart - $24.99
+                    Add to Cart - ${products[selectedProductIndex].price.toFixed(2)}
                   </button>
                   <button className="w-full py-3 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
                     Buy it now
@@ -330,22 +386,12 @@ export default function AiShoppingPage() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Highlights</h3>
                   
                   <ul className="space-y-2">
-                    <li className="flex items-start gap-2">
-                      <span className="text-gray-400 mt-1">✓</span>
-                      <span className="text-sm text-gray-700">Premium Earl Grey tea blend with bergamot oil</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-gray-400 mt-1">✓</span>
-                      <span className="text-sm text-gray-700">Hand-picked Ceylon black tea leaves</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-gray-400 mt-1">✓</span>
-                      <span className="text-sm text-gray-700">Natural bergamot flavoring from Italian citrus</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <span className="text-gray-400 mt-1">✓</span>
-                      <span className="text-sm text-gray-700">Available in loose leaf and tea bag formats</span>
-                    </li>
+                    {products[selectedProductIndex].highlights.map((highlight, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-gray-400 mt-1">✓</span>
+                        <span className="text-sm text-gray-700">{highlight}</span>
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -381,18 +427,7 @@ export default function AiShoppingPage() {
               
               <div className="prose max-w-none text-gray-700">
                 <p className="mb-4">
-                  Experience the timeless elegance of our Premium Earl Grey Tea, carefully crafted from the finest Ceylon black tea leaves 
-                  and infused with authentic bergamot oil from Italian citrus groves. This classic English blend delivers a perfect balance 
-                  of robust tea flavor and delicate citrus aromatics.
-                </p>
-                <p className="mb-4">
-                  Hand-picked at high altitude gardens in Sri Lanka, our tea leaves are processed using traditional methods to preserve 
-                  their natural character and strength. The addition of cornflower petals adds a touch of visual beauty to each cup, 
-                  making this not just a beverage, but a moment of daily luxury.
-                </p>
-                <p className="mb-4">
-                  Whether you're starting your morning or taking an afternoon break, this Earl Grey provides the perfect caffeine boost 
-                  while delivering an sophisticated taste experience that tea enthusiasts have cherished for generations.
+                  {products[selectedProductIndex].fullDescription}
                 </p>
               </div>
             </div>
