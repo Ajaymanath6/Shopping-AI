@@ -441,7 +441,7 @@ export default function AiShoppingPage() {
               <div 
                 className="grid grid-cols-1 lg:grid-cols-2 gap-6 rounded-lg p-6"
                 style={{ 
-                  backgroundColor: 'rgba(135, 166, 122, 0.15)', // #87A67A with 15% opacity
+                  backgroundColor: 'rgba(139, 115, 85, 0.12)', // Calm brown/wood color with 12% opacity
                 }}
               >
                 {/* Left side - Ingredients diagram */}
@@ -476,15 +476,15 @@ export default function AiShoppingPage() {
 
           {/* How to make chai section */}
           <div className="mt-16 pt-12 border-t border-gray-200">
-            <div 
-              className="p-6 rounded-lg"
-              style={{ 
-                backgroundColor: 'rgba(200, 220, 200, 0.3)', // Light green pale calm green
-              }}
-            >
+            <div className="p-6">
               <h2 className="text-3xl font-serif text-center text-gray-900 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>How to make chai?</h2>
               
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div 
+                className="grid grid-cols-1 lg:grid-cols-2 gap-8 rounded-lg p-6"
+                style={{ 
+                  backgroundColor: 'rgba(139, 115, 85, 0.12)', // Calm brown/wood color with 12% opacity
+                }}
+              >
                 {/* Left side - Image */}
                 <div className="w-full overflow-hidden rounded-lg" style={{ height: '500px' }}>
                   <img 
