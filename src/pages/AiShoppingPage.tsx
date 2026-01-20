@@ -433,17 +433,43 @@ export default function AiShoppingPage() {
             </div>
           </div>
 
-          {/* Ingredients section */}
+          {/* Ingredients section - Bento Box Layout */}
           <div className="mt-16 pt-12 border-t border-gray-200">
             <div className="p-6">
               <h2 className="text-2xl font-bold text-gray-900 mb-6">Ingredients</h2>
               
-              <div className="flex justify-center">
-                <img 
-                  src="/asambalend.png"
-                  alt="Assam Breakfast Blend Ingredients"
-                  className="max-w-md w-full h-auto rounded-lg object-cover"
-                />
+              <div 
+                className="grid grid-cols-1 lg:grid-cols-2 gap-6 rounded-lg p-6"
+                style={{ 
+                  backgroundColor: 'rgba(135, 166, 122, 0.15)', // #87A67A with 15% opacity
+                }}
+              >
+                {/* Left side - Ingredients diagram */}
+                <div className="w-full overflow-hidden rounded-lg">
+                  <img 
+                    src="/asambalend.png"
+                    alt="Assam Breakfast Blend Ingredients"
+                    className="w-full h-full object-cover object-top"
+                    style={{ 
+                      objectPosition: 'top',
+                      maxHeight: '500px',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </div>
+                
+                {/* Right side - Product on table */}
+                <div className="w-full overflow-hidden rounded-lg">
+                  <img 
+                    src="/asam on table.png"
+                    alt="Assam Breakfast Blend on table"
+                    className="w-full h-full object-cover"
+                    style={{ 
+                      maxHeight: '500px',
+                      objectFit: 'cover'
+                    }}
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -455,11 +481,16 @@ export default function AiShoppingPage() {
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Left side - Image */}
-                <div className="w-full">
+                <div className="w-full overflow-hidden rounded-lg">
                   <img 
                     src="/making asam.png"
                     alt="How to make Assam chai"
-                    className="w-full h-auto rounded-lg object-cover"
+                    className="w-full h-full object-cover object-top"
+                    style={{ 
+                      objectPosition: 'top',
+                      maxHeight: '600px',
+                      objectFit: 'cover'
+                    }}
                   />
                 </div>
                 
