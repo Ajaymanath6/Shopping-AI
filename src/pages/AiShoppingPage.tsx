@@ -168,7 +168,7 @@ export default function AiShoppingPage() {
                   onMouseLeave={handleProductImageLeave}
                 >
                   <img 
-                    src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=800&h=800&fit=crop&crop=center"
+                    src="/greyandprix.png"
                     alt="Premium Earl Grey Tea"
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
@@ -185,22 +185,22 @@ export default function AiShoppingPage() {
                 <div className="grid grid-cols-4 gap-3">
                   {[
                     {
-                      src: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=200&h=200&fit=crop&crop=center',
+                      src: '/sample3.png',
                       alt: 'Earl Grey tea leaves close-up view',
                       label: 'Tea Leaves'
                     },
                     {
-                      src: 'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=200&h=200&fit=crop&crop=center', 
+                      src: '/sample2.png', 
                       alt: 'Brewed Earl Grey tea in elegant cup',
                       label: 'Brewed Tea'
                     },
                     {
-                      src: 'https://images.unsplash.com/photo-1563822249548-9a72b6353cd1?w=200&h=200&fit=crop&crop=center',
+                      src: '/sample.png',
                       alt: 'Premium tea packaging and bergamot',
                       label: 'Packaging'
                     },
                     {
-                      src: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=200&h=200&fit=crop&crop=center',
+                      src: '/greyandprix.png',
                       alt: 'Tea ceremony setup with Earl Grey',
                       label: 'Tea Setup'
                     }
