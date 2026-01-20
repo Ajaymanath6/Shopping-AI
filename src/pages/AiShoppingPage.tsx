@@ -423,7 +423,7 @@ export default function AiShoppingPage() {
           {/* Product description section - Unified hover area */}
           <div className="mt-16 pt-12 border-t border-gray-200">
             <div className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Description</h2>
+              <h2 className="text-3xl font-serif text-center text-gray-900 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>Description</h2>
               
               <div className="prose max-w-none text-gray-700">
                 <p className="mb-4">
@@ -476,7 +476,12 @@ export default function AiShoppingPage() {
 
           {/* How to make chai section */}
           <div className="mt-16 pt-12 border-t border-gray-200">
-            <div className="p-6">
+            <div 
+              className="p-6 rounded-lg"
+              style={{ 
+                backgroundColor: 'rgba(200, 220, 200, 0.3)', // Light green pale calm green
+              }}
+            >
               <h2 className="text-3xl font-serif text-center text-gray-900 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>How to make chai?</h2>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
