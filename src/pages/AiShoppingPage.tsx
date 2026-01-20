@@ -97,6 +97,24 @@ export default function AiShoppingPage() {
   // Selected product state - default to Earl Grey Grand Prix
   const [selectedProductIndex, setSelectedProductIndex] = useState(3)
   
+  // Fixed product for pricing and content - always show Assam Breakfast Blend
+  const fixedProduct = {
+    name: 'Assam Breakfast Blend',
+    description: 'Fuel your day with this robust, full-bodied black tea, perfect for the open road.',
+    price: 24.99,
+    originalPrice: 32.99,
+    discount: 25,
+    sizes: ['50g', '100g', '250g'],
+    formats: ['Loose Leaf', 'Tea Bags'],
+    highlights: [
+      'Robust and full-bodied black tea',
+      'Perfect for morning energy',
+      'Rich and malty flavor',
+      'Hand-picked from Assam gardens'
+    ],
+    fullDescription: 'Fuel your day with this robust, full-bodied black tea, perfect for the open road. This Assam Breakfast Blend delivers a strong, malty flavor that provides the perfect morning boost. Hand-picked from the finest Assam gardens, it offers a rich and invigorating experience that tea enthusiasts love.'
+  }
+  
   // Section orbs temporarily removed - see SECTION_ORBS_BACKUP.md
 
   // Smart Suggest Orb hover handlers
@@ -308,12 +326,12 @@ export default function AiShoppingPage() {
             <div className="lg:col-span-5 space-y-6">
               {/* Product title and price */}
               <div className="p-4">
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">{products[selectedProductIndex].name}</h1>
-                <p className="text-sm text-gray-600 mb-4">{products[selectedProductIndex].description}</p>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">{fixedProduct.name}</h1>
+                <p className="text-sm text-gray-600 mb-4">{fixedProduct.description}</p>
                 <div className="flex items-center gap-4 mb-6">
-                  <span className="text-3xl font-bold text-gray-900">${products[selectedProductIndex].price.toFixed(2)}</span>
-                  <span className="text-lg text-gray-500 line-through">${products[selectedProductIndex].originalPrice.toFixed(2)}</span>
-                  <Badge variant="warning" className="bg-gray-100 text-gray-800 px-2 py-1 text-xs">{products[selectedProductIndex].discount}% OFF</Badge>
+                  <span className="text-3xl font-bold text-gray-900">${fixedProduct.price.toFixed(2)}</span>
+                  <span className="text-lg text-gray-500 line-through">${fixedProduct.originalPrice.toFixed(2)}</span>
+                  <Badge variant="warning" className="bg-gray-100 text-gray-800 px-2 py-1 text-xs">{fixedProduct.discount}% OFF</Badge>
                 </div>
               </div>
 
@@ -324,8 +342,8 @@ export default function AiShoppingPage() {
                 <div className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Size</label>
-                    <div className={`grid gap-2 ${products[selectedProductIndex].sizes.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
-                      {products[selectedProductIndex].sizes.map((size, idx) => (
+                    <div className={`grid gap-2 ${fixedProduct.sizes.length === 3 ? 'grid-cols-3' : 'grid-cols-2'}`}>
+                      {fixedProduct.sizes.map((size, idx) => (
                         <button 
                           key={size} 
                           className={`p-3 border rounded-lg text-sm font-medium transition-colors ${
@@ -341,7 +359,7 @@ export default function AiShoppingPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">Format</label>
                     <div className="grid grid-cols-2 gap-2">
-                      {products[selectedProductIndex].formats.map((format, idx) => (
+                      {fixedProduct.formats.map((format, idx) => (
                         <button 
                           key={format} 
                           className={`p-3 border rounded-lg text-sm font-medium transition-colors ${
@@ -372,7 +390,7 @@ export default function AiShoppingPage() {
                 
                 <div className="space-y-3">
                   <button className="w-full py-3 text-lg font-semibold bg-gray-900 hover:bg-gray-800 text-white rounded-lg transition-colors">
-                    Add to Cart - ${products[selectedProductIndex].price.toFixed(2)}
+                    Add to Cart - ${fixedProduct.price.toFixed(2)}
                   </button>
                   <button className="w-full py-3 text-gray-700 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors font-medium">
                     Buy it now
@@ -386,7 +404,7 @@ export default function AiShoppingPage() {
                   <h3 className="text-lg font-semibold text-gray-900 mb-4">Product Highlights</h3>
                   
                   <ul className="space-y-2">
-                    {products[selectedProductIndex].highlights.map((highlight, idx) => (
+                    {fixedProduct.highlights.map((highlight, idx) => (
                       <li key={idx} className="flex items-start gap-2">
                         <span className="text-gray-400 mt-1">✓</span>
                         <span className="text-sm text-gray-700">{highlight}</span>
@@ -428,9 +446,9 @@ export default function AiShoppingPage() {
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
                 {/* Left side - Text */}
                 <div className="text-left">
-                  <h3 className="text-2xl font-semibold text-gray-900 mb-4">Mint Revitalizer Herblizer</h3>
+                  <h3 className="text-2xl font-semibold text-gray-900 mb-4">Assam Breakfast Blend</h3>
                   <p className="text-base text-gray-700 leading-relaxed">
-                    A refreshing, caffeine-free blend to recharge your engine. This herbal infusion combines premium mint leaves with natural herbs to create a revitalizing experience that energizes without caffeine. Perfect for any time of day, it offers a cooling sensation that refreshes your senses and provides a gentle boost of natural energy.
+                    Fuel your day with this robust, full-bodied black tea, perfect for the open road. This Assam Breakfast Blend delivers a strong, malty flavor that provides the perfect morning boost. Hand-picked from the finest Assam gardens, it offers a rich and invigorating experience that tea enthusiasts love.
                   </p>
                 </div>
                 
