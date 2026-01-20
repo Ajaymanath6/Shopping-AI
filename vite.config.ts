@@ -2,10 +2,9 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
-export default defineConfig(({ mode }) => {
+export default defineConfig(() => {
   // For Vercel deployment, use root base path '/'
   // For GitHub Pages, change base to '/shopos/' in production
-  const isProd = mode === 'production'
   
   return {
     plugins: [react()],
