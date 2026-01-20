@@ -17,23 +17,23 @@ export default function AiShoppingPage() {
   // Product data with all details for each product
   const products = [
     {
-      src: '/sample3.png',
-      alt: 'Earl Grey tea leaves close-up view',
-      label: 'Tea Leaves',
-      name: 'Golden Darjeeling Muscatel',
-      description: 'A rare first flush with notes of sweet street grapes, a joyride for your senses. 3 packets in one: Golden Darjeeling, Mint Revitalizer, and Spicy Masala.',
-      price: 29.99,
-      originalPrice: 39.99,
+      src: '/asam on table3.png',
+      alt: 'Assam tea on table',
+      label: 'Assam Tea',
+      name: 'Assam Breakfast Blend',
+      description: 'A robust, full-bodied black tea, perfect for the open road.',
+      price: 24.99,
+      originalPrice: 32.99,
       discount: 25,
       sizes: ['50g', '100g', '250g'],
       formats: ['Loose Leaf', 'Tea Bags'],
       highlights: [
-        '3-pack bundle: Golden Darjeeling, Mint Revitalizer, Spicy Masala',
-        'Rare first flush Darjeeling tea leaves',
-        'Sweet muscatel grape notes',
-        'Hand-picked from high altitude gardens'
+        'Robust and full-bodied black tea',
+        'Perfect for morning energy',
+        'Rich and malty flavor',
+        'Hand-picked from Assam gardens'
       ],
-      fullDescription: 'Experience the rare elegance of our Golden Darjeeling Muscatel 3-pack bundle. This special collection includes three premium teas: Golden Darjeeling Muscatel with distinctive muscatel grape notes, Mint Revitalizer Herblizer for a refreshing caffeine-free experience, and Spicy Masala Chai Concentrate for a powerful aromatic boost. Hand-picked from the finest gardens, this trio offers a unique flavor journey that tea connoisseurs cherish.'
+      fullDescription: 'Fuel your day with this robust, full-bodied black tea, perfect for the open road. This Assam Breakfast Blend delivers a strong, malty flavor that provides the perfect morning boost. Hand-picked from the finest Assam gardens, it offers a rich and invigorating experience that tea enthusiasts love.'
     },
     {
       src: '/sample2.png', 
@@ -74,28 +74,28 @@ export default function AiShoppingPage() {
       fullDescription: 'Fuel your day with our Spicy Masala Chai Concentrate, a powerful blend of aromatic spices and premium tea. This concentrated mix delivers the authentic taste of traditional Indian masala chai, perfect for those who love bold, spicy flavors.'
     },
     {
-      src: '/greyandprix.png',
-      alt: 'Tea ceremony setup with Earl Grey',
-      label: 'Tea Setup',
-      name: 'Earl Grey Grand Prix',
-      description: 'A high-octane blend of black tea and bergamot, built for powerful engine.',
+      src: '/asamontablfull.png',
+      alt: 'Assam tea full view on table',
+      label: 'Assam Full View',
+      name: 'Assam Breakfast Blend',
+      description: 'A robust, full-bodied black tea, perfect for the open road.',
       price: 24.99,
       originalPrice: 32.99,
       discount: 25,
       sizes: ['50g', '100g', '250g'],
       formats: ['Loose Leaf', 'Tea Bags'],
       highlights: [
-        'Premium Earl Grey tea blend with bergamot oil',
-        'Hand-picked Ceylon black tea leaves',
-        'Natural bergamot flavoring from Italian citrus',
-        'Available in loose leaf and tea bag formats'
+        'Robust and full-bodied black tea',
+        'Perfect for morning energy',
+        'Rich and malty flavor',
+        'Hand-picked from Assam gardens'
       ],
-      fullDescription: 'Experience the timeless elegance of our Premium Earl Grey Tea, carefully crafted from the finest Ceylon black tea leaves and infused with authentic bergamot oil from Italian citrus groves. This classic English blend delivers a perfect balance of robust tea flavor and delicate citrus aromatics.'
+      fullDescription: 'Fuel your day with this robust, full-bodied black tea, perfect for the open road. This Assam Breakfast Blend delivers a strong, malty flavor that provides the perfect morning boost. Hand-picked from the finest Assam gardens, it offers a rich and invigorating experience that tea enthusiasts love.'
     }
   ]
   
-  // Selected product state - default to Earl Grey Grand Prix
-  const [selectedProductIndex, setSelectedProductIndex] = useState(3)
+  // Selected product state - default to first Assam image
+  const [selectedProductIndex, setSelectedProductIndex] = useState(0)
   
   // Fixed product for pricing and content - always show Assam Breakfast Blend
   const fixedProduct = {
@@ -453,11 +453,12 @@ export default function AiShoppingPage() {
                 </div>
                 
                 {/* Right side - Image */}
-                <div className="w-full">
+                <div className="w-full overflow-hidden rounded-lg bg-transparent" style={{ height: '400px', backgroundColor: 'transparent' }}>
                   <img 
                     src="/asam on table.png"
                     alt="Assam tea on table"
-                    className="w-full h-auto object-cover rounded-lg"
+                    className="w-full h-full object-cover rounded-lg"
+                    style={{ objectPosition: 'center center', transform: 'scale(1.2)', backgroundColor: 'transparent' }}
                   />
                 </div>
               </div>
@@ -534,7 +535,7 @@ export default function AiShoppingPage() {
           </div>
 
           {/* How to make chai section - Copy 2 */}
-          <div className="mt-16 pt-12 border-t border-gray-200">
+          <div className="mt-16 pt-6 border-t border-gray-200">
             <div className="">
               <div className="flex items-center justify-center gap-4 mb-6">
                 <h2 className="text-5xl font-serif text-center text-gray-900 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>How to make chai?</h2>
@@ -701,8 +702,8 @@ export default function AiShoppingPage() {
             {/* Right side - Image (60%) */}
             <div className="w-full lg:col-span-3 p-6">
               <img 
-                src="/sample3.png"
-                alt="Golden Darjeeling Muscatel"
+                src="/asam on table3.png"
+                alt="Assam Breakfast Blend"
                 className="w-full h-auto object-cover rounded-lg"
               />
             </div>
@@ -718,17 +719,17 @@ export default function AiShoppingPage() {
                 {/* Left side - Image (60%) */}
                 <div className="w-full lg:col-span-3 p-6">
                   <img 
-                    src="/greyandprix.png"
-                    alt="Earl Grey Grand Prix"
+                    src="/asamontablfull.png"
+                    alt="Assam Breakfast Blend"
                     className="w-full h-auto object-cover rounded-lg"
                   />
                 </div>
                 
                 {/* Right side - Text (40%) */}
                 <div className="lg:col-span-2 p-6">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Earl Grey Grand Prix</h2>
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Assam Breakfast Blend</h2>
                   <p className="text-base text-gray-700 mb-6">
-                    A high-octane blend of black tea and bergamot, built for powerful engine.
+                    A robust, full-bodied black tea, perfect for the open road.
                   </p>
                   
                   <div className="flex items-center gap-4 mb-6">
