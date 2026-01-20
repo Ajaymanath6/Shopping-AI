@@ -14,6 +14,33 @@ export default function AiShoppingPage() {
   const [helpOrbExpanded, setHelpOrbExpanded] = useState(false)
   const idleTimerRef = useRef<number | null>(null)
   
+  // Product images
+  const productImages = [
+    {
+      src: '/sample3.png',
+      alt: 'Earl Grey tea leaves close-up view',
+      label: 'Tea Leaves'
+    },
+    {
+      src: '/sample2.png', 
+      alt: 'Brewed Earl Grey tea in elegant cup',
+      label: 'Brewed Tea'
+    },
+    {
+      src: '/sample.png',
+      alt: 'Premium tea packaging and bergamot',
+      label: 'Packaging'
+    },
+    {
+      src: '/greyandprix.png',
+      alt: 'Tea ceremony setup with Earl Grey',
+      label: 'Tea Setup'
+    }
+  ]
+  
+  // Selected main image state - default to first image
+  const [selectedImageIndex, setSelectedImageIndex] = useState(3) // Start with greyandprix.png
+  
   // Section orbs temporarily removed - see SECTION_ORBS_BACKUP.md
 
   // Smart Suggest Orb hover handlers
@@ -168,8 +195,8 @@ export default function AiShoppingPage() {
                   onMouseLeave={handleProductImageLeave}
                 >
                   <img 
-                    src="/greyandprix.png"
-                    alt="Premium Earl Grey Tea"
+                    src={productImages[selectedImageIndex].src}
+                    alt={productImages[selectedImageIndex].alt}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
                   />
                   
@@ -183,31 +210,15 @@ export default function AiShoppingPage() {
                 
                 {/* Thumbnail images */}
                 <div className="grid grid-cols-4 gap-3">
-                  {[
-                    {
-                      src: '/sample3.png',
-                      alt: 'Earl Grey tea leaves close-up view',
-                      label: 'Tea Leaves'
-                    },
-                    {
-                      src: '/sample2.png', 
-                      alt: 'Brewed Earl Grey tea in elegant cup',
-                      label: 'Brewed Tea'
-                    },
-                    {
-                      src: '/sample.png',
-                      alt: 'Premium tea packaging and bergamot',
-                      label: 'Packaging'
-                    },
-                    {
-                      src: '/greyandprix.png',
-                      alt: 'Tea ceremony setup with Earl Grey',
-                      label: 'Tea Setup'
-                    }
-                  ].map((image, idx) => (
+                  {productImages.map((image, idx) => (
                     <button 
                       key={idx} 
-                      className="aspect-square bg-gray-100 rounded-lg overflow-hidden hover:ring-2 hover:ring-gray-300 transition-all group relative"
+                      onClick={() => setSelectedImageIndex(idx)}
+                      className={`aspect-square bg-gray-100 rounded-lg overflow-hidden transition-all group relative ${
+                        selectedImageIndex === idx 
+                          ? 'ring-2 ring-gray-800' 
+                          : 'hover:ring-2 hover:ring-gray-300'
+                      }`}
                       onMouseEnter={handleProductImageHover}
                       onMouseLeave={handleProductImageLeave}
                       title={image.label}
