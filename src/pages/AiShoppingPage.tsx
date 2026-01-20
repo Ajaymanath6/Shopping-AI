@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import SmartSuggestOrb from '../components/SmartSuggestOrb'
 import ProductOrb from '../components/ProductOrb'
 import Badge from '../components/Badge'
-import { RiTruckLine, RiArrowGoBackLine, RiPlantLine } from '@remixicon/react'
+import { RiTruckLine, RiArrowGoBackLine, RiPlantLine, RiNumber1, RiNumber2, RiNumber3, RiNumber4, RiNumber5 } from '@remixicon/react'
 
 export default function AiShoppingPage() {
   const [showOrb, setShowOrb] = useState(false)
@@ -429,6 +429,99 @@ export default function AiShoppingPage() {
                 <p className="mb-4">
                   {products[selectedProductIndex].fullDescription}
                 </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Ingredients section */}
+          <div className="mt-16 pt-12 border-t border-gray-200">
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Ingredients</h2>
+              
+              <div className="w-full">
+                <img 
+                  src="/asambalend.png"
+                  alt="Assam Breakfast Blend Ingredients"
+                  className="w-full h-auto rounded-lg object-cover"
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* How to make chai section */}
+          <div className="mt-16 pt-12 border-t border-gray-200">
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">How to make chai?</h2>
+              
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Left side - Image */}
+                <div className="w-full">
+                  <img 
+                    src="/making asam.png"
+                    alt="How to make Assam chai"
+                    className="w-full h-auto rounded-lg object-cover"
+                  />
+                </div>
+                
+                {/* Right side - Steps */}
+                <div className="flex flex-col justify-center">
+                  <div className="space-y-6">
+                    {/* Step 1 */}
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
+                        <RiNumber1 size={20} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Boil Water</h3>
+                        <p className="text-sm text-gray-600">Bring 1 cup of water to a rolling boil in a saucepan.</p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 2 */}
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
+                        <RiNumber2 size={20} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Add Tea & Spices</h3>
+                        <p className="text-sm text-gray-600">Add 1-2 teaspoons of tea leaves, crushed cardamom, ginger, and other spices.</p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 3 */}
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
+                        <RiNumber3 size={20} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Simmer</h3>
+                        <p className="text-sm text-gray-600">Reduce heat and let it simmer for 3-5 minutes until the tea is dark and aromatic.</p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 4 */}
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
+                        <RiNumber4 size={20} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Add Milk & Sugar</h3>
+                        <p className="text-sm text-gray-600">Add milk and sugar to taste. Bring to a boil again and let it froth.</p>
+                      </div>
+                    </div>
+                    
+                    {/* Step 5 */}
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0 w-10 h-10 rounded-full bg-gray-900 text-white flex items-center justify-center">
+                        <RiNumber5 size={20} />
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">Strain & Serve</h3>
+                        <p className="text-sm text-gray-600">Strain the chai into cups and serve hot. Enjoy your perfect cup of chai!</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
