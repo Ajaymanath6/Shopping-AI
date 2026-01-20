@@ -436,7 +436,7 @@ export default function AiShoppingPage() {
           {/* Ingredients section - Bento Box Layout */}
           <div className="mt-16 pt-12 border-t border-gray-200">
             <div className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">Ingredients</h2>
+              <h2 className="text-3xl font-serif text-center text-gray-900 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>Ingredients</h2>
               
               <div 
                 className="grid grid-cols-1 lg:grid-cols-2 gap-6 rounded-lg p-6"
@@ -477,19 +477,19 @@ export default function AiShoppingPage() {
           {/* How to make chai section */}
           <div className="mt-16 pt-12 border-t border-gray-200">
             <div className="p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-6">How to make chai?</h2>
+              <h2 className="text-3xl font-serif text-center text-gray-900 mb-6 tracking-wide" style={{ fontFamily: 'Georgia, "Times New Roman", serif', fontWeight: 400, letterSpacing: '0.05em' }}>How to make chai?</h2>
               
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 {/* Left side - Image */}
-                <div className="w-full overflow-hidden rounded-lg">
+                <div className="w-full overflow-hidden rounded-lg" style={{ height: '500px' }}>
                   <img 
                     src="/making asam.png"
                     alt="How to make Assam chai"
-                    className="w-full h-full object-cover object-top"
+                    className="w-full h-full object-cover"
                     style={{ 
-                      objectPosition: 'top',
-                      maxHeight: '600px',
-                      objectFit: 'cover'
+                      objectPosition: 'center top',
+                      objectFit: 'cover',
+                      height: '100%'
                     }}
                   />
                 </div>
@@ -504,6 +504,7 @@ export default function AiShoppingPage() {
                           src="https://in.teabox.com/cdn/shop/files/Step_1.svg?v=1710581456"
                           alt="Step 1"
                           className="w-16 h-16"
+                          style={{ filter: 'brightness(0) saturate(100%) invert(47%) sepia(15%) saturate(800%) hue-rotate(15deg) brightness(95%) contrast(90%)' }}
                         />
                       </div>
                       <div>
@@ -519,6 +520,7 @@ export default function AiShoppingPage() {
                           src="https://in.teabox.com/cdn/shop/files/Step_2.svg?v=1710581558"
                           alt="Step 2"
                           className="w-16 h-16"
+                          style={{ filter: 'brightness(0) saturate(100%) invert(47%) sepia(15%) saturate(800%) hue-rotate(15deg) brightness(95%) contrast(90%)' }}
                         />
                       </div>
                       <div>
@@ -534,6 +536,7 @@ export default function AiShoppingPage() {
                           src="https://in.teabox.com/cdn/shop/files/Step_3.svg?v=1710581672"
                           alt="Step 3"
                           className="w-16 h-16"
+                          style={{ filter: 'brightness(0) saturate(100%) invert(47%) sepia(15%) saturate(800%) hue-rotate(15deg) brightness(95%) contrast(90%)' }}
                         />
                       </div>
                       <div>
@@ -549,6 +552,7 @@ export default function AiShoppingPage() {
                           src="https://in.teabox.com/cdn/shop/files/Step_4.svg?v=1710581712"
                           alt="Step 4"
                           className="w-16 h-16"
+                          style={{ filter: 'brightness(0) saturate(100%) invert(47%) sepia(15%) saturate(800%) hue-rotate(15deg) brightness(95%) contrast(90%)' }}
                         />
                       </div>
                       <div>
@@ -564,6 +568,7 @@ export default function AiShoppingPage() {
                           src="https://in.teabox.com/cdn/shop/files/Chai_Step_5.svg?v=1710581736"
                           alt="Step 5"
                           className="w-16 h-16"
+                          style={{ filter: 'brightness(0) saturate(100%) invert(47%) sepia(15%) saturate(800%) hue-rotate(15deg) brightness(95%) contrast(90%)' }}
                         />
                       </div>
                       <div>
