@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { motion, AnimatePresence } from 'motion/react'
-import { RiSparklingFill, RiCloseLine, RiSearchLine, RiMicLine, RiSendPlaneLine, RiEyeLine, RiHeartLine, RiStarLine, RiBrainLine, RiLoader4Fill, RiCheckLine, RiUser3Line, RiLoader2Line } from '@remixicon/react'
+import { RiSparklingFill, RiCloseLine, RiSearchLine, RiMicLine, RiSendPlaneLine, RiEyeLine, RiHeartLine, RiStarLine, RiBrainLine, RiLoader4Fill, RiCheckLine, RiUser3Line, RiLoader2Line, RiBankCardLine, RiTruckLine, RiMapPinLine, RiArrowRightSLine } from '@remixicon/react'
 
 // Custom bouncing keyframes for smooth animation
 const bounceInAnimation = `
@@ -127,6 +127,26 @@ const bounceInAnimation = `
   width: 100%;
   height: 100%;
 }
+
+/* Lean, modern rounded scrollbar for chat */
+.chat-scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.55) transparent;
+}
+.chat-scroll-area::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.chat-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.45);
+  border-radius: 9999px;
+}
+.chat-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.65);
+}
 `
 
 // Add the styles to the document head
@@ -164,6 +184,7 @@ interface ConversationMessage {
   isTyping: boolean
   icon?: React.ComponentType<{ size?: string | number }>
   statusIndicator?: string
+  imageUrl?: string
 }
 
 const KERALA_TEA_SUGGESTIONS: SuggestionProduct[] = [
@@ -291,7 +312,16 @@ export default function SmartSuggestOrb({
   const [isAiResponding, setIsAiResponding] = useState(false)
   const [selectedHelpIndex, setSelectedHelpIndex] = useState<number | null>(null)
   const [showSummary, setShowSummary] = useState(false)
+  const [showPurchaseUI, setShowPurchaseUI] = useState(false)
+  const [showPurchaseSkeleton, setShowPurchaseSkeleton] = useState(false)
+  const [showBuyItNowButton, setShowBuyItNowButton] = useState(false)
+  const [showBuyButtonPressed, setShowBuyButtonPressed] = useState(false)
+  const [showPaySkeleton, setShowPaySkeleton] = useState(false)
+  const [isPayButtonLoading, setIsPayButtonLoading] = useState(false)
+  const [showPurchaseComplete, setShowPurchaseComplete] = useState(false)
   const orbRef = useRef<HTMLDivElement>(null)
+  const buyItNowClickTimeoutRef = useRef<number | null>(null)
+  const purchaseFlowTimeoutsRef = useRef<number[]>([])
   const voiceTimeoutRef = useRef<number | null>(null)
   const chatContentRef = useRef<HTMLDivElement>(null)
 
@@ -441,6 +471,110 @@ export default function SmartSuggestOrb({
         setShowSummary(true)
       }, 4000)
     }, messageDelay)
+  }
+
+  // Purchase flow: intro (full text, no typing) → product image + Buy button → 2s → button pressed → skeleton → pay section
+  const ASSAM_IMAGE = '/asam on table3.png'
+  const INTRO_TEXT = "Great choice! Let's get you checked out — one moment."
+
+  const startPurchaseFlow = () => {
+    setIsInConversation(true)
+    setShowSuggestions(false)
+    setShowPurchaseUI(false)
+    setShowBuyItNowButton(false)
+    setShowBuyButtonPressed(false)
+    setShowPaySkeleton(false)
+    setShowPurchaseSkeleton(false)
+    setIsPayButtonLoading(false)
+    setShowPurchaseComplete(false)
+    purchaseFlowTimeoutsRef.current.forEach(clearTimeout)
+    purchaseFlowTimeoutsRef.current = []
+
+    const aiMsg: ConversationMessage = {
+      id: `ai-${Date.now()}`,
+      type: 'result',
+      content: INTRO_TEXT,
+      timestamp: Date.now(),
+      isTyping: false,
+      icon: RiSparklingFill
+    }
+    setConversationMessages([aiMsg])
+    scrollToBottom()
+    // After short delay, show product + Buy button
+    purchaseFlowTimeoutsRef.current.push(
+      window.setTimeout(() => {
+        setShowBuyItNowButton(true)
+        scrollToBottom()
+        // After 2s, AI "presses" the button (show pressed state, then skeleton, then pay)
+        purchaseFlowTimeoutsRef.current.push(
+          window.setTimeout(() => {
+            setShowBuyButtonPressed(true)
+            purchaseFlowTimeoutsRef.current.push(
+              window.setTimeout(() => {
+                setShowBuyButtonPressed(false)
+                setShowBuyItNowButton(false)
+                setShowPaySkeleton(true)
+                scrollToBottom()
+                purchaseFlowTimeoutsRef.current.push(
+                  window.setTimeout(() => {
+                    setShowPaySkeleton(false)
+                    setShowPurchaseUI(true)
+                    scrollToBottom()
+                    schedulePayCompleteFlow()
+                  }, 2000)
+                )
+              }, 450)
+            )
+          }, 2000)
+        )
+      }, 800)
+    )
+  }
+
+  const schedulePayCompleteFlow = () => {
+    purchaseFlowTimeoutsRef.current.push(
+      window.setTimeout(() => {
+        setIsPayButtonLoading(true)
+        scrollToBottom()
+        purchaseFlowTimeoutsRef.current.push(
+          window.setTimeout(() => {
+            setIsPayButtonLoading(false)
+            setShowPurchaseUI(false)
+            setShowPurchaseComplete(true)
+            scrollToBottom()
+          }, 2500)
+        )
+      }, 1500)
+    )
+  }
+
+  const handlePayNowClick = () => {
+    purchaseFlowTimeoutsRef.current.forEach(clearTimeout)
+    purchaseFlowTimeoutsRef.current = []
+    setIsPayButtonLoading(true)
+    scrollToBottom()
+    purchaseFlowTimeoutsRef.current.push(
+      window.setTimeout(() => {
+        setIsPayButtonLoading(false)
+        setShowPurchaseUI(false)
+        setShowPurchaseComplete(true)
+        scrollToBottom()
+      }, 2500)
+    )
+  }
+
+  const handleBuyItNowClick = () => {
+    purchaseFlowTimeoutsRef.current.forEach(clearTimeout)
+    purchaseFlowTimeoutsRef.current = []
+    if (buyItNowClickTimeoutRef.current) {
+      clearTimeout(buyItNowClickTimeoutRef.current)
+      buyItNowClickTimeoutRef.current = null
+    }
+    setShowBuyButtonPressed(false)
+    setShowBuyItNowButton(false)
+    setShowPurchaseUI(true)
+    setTimeout(() => scrollToBottom(), 50)
+    schedulePayCompleteFlow()
   }
 
   // Add typing message function
@@ -647,6 +781,19 @@ export default function SmartSuggestOrb({
     setIsAiResponding(false)
     setSelectedHelpIndex(null)
     setShowSummary(false)
+    setShowPurchaseUI(false)
+    setShowPurchaseSkeleton(false)
+    setShowBuyItNowButton(false)
+    setShowBuyButtonPressed(false)
+    setShowPaySkeleton(false)
+    setIsPayButtonLoading(false)
+    setShowPurchaseComplete(false)
+    purchaseFlowTimeoutsRef.current.forEach(clearTimeout)
+    purchaseFlowTimeoutsRef.current = []
+    if (buyItNowClickTimeoutRef.current) {
+      clearTimeout(buyItNowClickTimeoutRef.current)
+      buyItNowClickTimeoutRef.current = null
+    }
     
     // Clear voice timeout
     if (voiceTimeoutRef.current) {
@@ -750,6 +897,19 @@ export default function SmartSuggestOrb({
       setShowVoiceAnimation(false)
       setIsAiResponding(false)
       setSelectedHelpIndex(null)
+      setShowPurchaseUI(false)
+      setShowPurchaseSkeleton(false)
+      setShowBuyItNowButton(false)
+      setShowBuyButtonPressed(false)
+      setShowPaySkeleton(false)
+      setIsPayButtonLoading(false)
+      setShowPurchaseComplete(false)
+      purchaseFlowTimeoutsRef.current.forEach(clearTimeout)
+      purchaseFlowTimeoutsRef.current = []
+      if (buyItNowClickTimeoutRef.current) {
+        clearTimeout(buyItNowClickTimeoutRef.current)
+        buyItNowClickTimeoutRef.current = null
+      }
       
       // Clear voice timeout
       if (voiceTimeoutRef.current) {
@@ -1325,7 +1485,8 @@ export default function SmartSuggestOrb({
                 )}
               </div>
 
-              {/* Footer - Search Bar and Voice Input (Always Visible at Bottom) */}
+              {/* Footer - Search Bar and Voice Input (hidden when Purchase UI is shown) */}
+              {!showPurchaseUI && !showPurchaseComplete && (
               <div className="border-t p-3 rounded-b-3xl" style={{ borderColor: 'rgba(229, 231, 235, 0.3)', background: '#ffffff' }}>
                 <div className="flex gap-2">
                   <div className="flex-1 relative">
@@ -1333,7 +1494,7 @@ export default function SmartSuggestOrb({
                       type="text"
                       value={inputText}
                       onChange={(e) => setInputText(e.target.value)}
-                      placeholder={isVoiceRecording ? "Listening..." : (mode === 'discovery' ? "Ask me anything, Ajay..." : "Ask about this Earl Grey tea...")}
+                      placeholder={isVoiceRecording ? "Listening..." : (mode === 'discovery' ? "Ask me anything, Ajay..." : "Ask about this Assam Breakfast Blend...")}
                       className="w-full px-3 py-2.5 rounded-xl focus:outline-none focus:ring-2 text-sm"
                       style={{
                         background: 'rgba(249, 250, 251, 0.8)',
@@ -1438,6 +1599,7 @@ export default function SmartSuggestOrb({
                   </button>
                 </div>
               </div>
+              )}
             </div>
           )}
         </motion.div>
@@ -1505,7 +1667,7 @@ export default function SmartSuggestOrb({
               scale: isVisible ? 1 : 0,
               opacity: isVisible ? 1 : 0,
               width: isExpanded ? 'min(384px, calc(100vw - 40px))' : 48, // Responsive width for small screens
-              height: isExpanded ? 'min(384px, calc(100vh - 80px))' : 48 // Responsive height for small screens
+              height: isExpanded ? 'min(440px, calc(100vh - 80px))' : 48 // Responsive height for small screens
             }}
             transition={{
               type: "spring",
@@ -1638,12 +1800,9 @@ export default function SmartSuggestOrb({
                             backdropFilter: 'blur(8px)'
                           }}
                           onClick={() => {
-                            setInputText("Help me purchase this Earl Grey tea")
+                            setShowSuggestions(false)
                             handleOrbClick()
-                            // Send the input after chat expands
-                            setTimeout(() => {
-                              handleSendInput()
-                            }, 400)
+                            setTimeout(() => startPurchaseFlow(), 500)
                           }}
                         >
                           <p className="text-xs font-medium text-gray-900 whitespace-nowrap">
@@ -1778,11 +1937,220 @@ export default function SmartSuggestOrb({
                 </div>
 
                 {/* Chat content area */}
-                <div ref={chatContentRef} className="flex-1 overflow-auto p-4 space-y-3">
+                <div ref={chatContentRef} className="chat-scroll-area flex-1 overflow-auto p-4 space-y-3">
                   {isInConversation ? (
-                    /* Conversation Mode: Show AI analysis messages */
+                    /* Conversation Mode: Show AI analysis messages or Purchase UI */
                     <div className="space-y-3">
-                      {showConversationSkeleton ? (
+                      {showPurchaseUI ? (
+                        /* Pay section: product, quantity, card, shipping, address, subtotal, pay (Etsy-style) */
+                        <div className="space-y-3">
+                          <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                            <div className="flex gap-3 p-3">
+                              <img src="/asam on table3.png" alt="Assam Breakfast Blend" className="w-16 h-16 rounded-lg object-cover flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <h4 className="text-sm font-semibold text-gray-900">Assam Breakfast Blend</h4>
+                                <p className="text-xs text-gray-600 mt-0.5">Fuel your day with this robust, full-bodied black tea.</p>
+                                <div className="flex items-center mt-2 bg-gray-100 rounded-lg w-20">
+                                  <button type="button" className="p-1 hover:bg-gray-200 rounded-l-lg text-gray-600 text-sm">−</button>
+                                  <span className="flex-1 text-center text-xs py-1 border-x border-gray-200">1</span>
+                                  <button type="button" className="p-1 hover:bg-gray-200 rounded-r-lg text-gray-600 text-sm">+</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                          <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <RiBankCardLine size={18} className="text-blue-600 flex-shrink-0" />
+                              <div>
+                                <p className="text-xs font-semibold text-gray-900">Visa</p>
+                                <p className="text-xs text-gray-500">**** 1254</p>
+                              </div>
+                            </div>
+                            <RiArrowRightSLine size={16} className="text-gray-400 flex-shrink-0" />
+                          </div>
+                          <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <RiTruckLine size={18} className="text-gray-600 flex-shrink-0" />
+                              <div>
+                                <p className="text-xs font-semibold text-gray-900">USPS Ground Advantage</p>
+                                <p className="text-xs text-gray-500">Free • 3–5 business days</p>
+                              </div>
+                            </div>
+                            <RiArrowRightSLine size={16} className="text-gray-400 flex-shrink-0" />
+                          </div>
+                          <div className="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <RiMapPinLine size={18} className="text-gray-600 flex-shrink-0" />
+                              <div>
+                                <p className="text-xs font-semibold text-gray-900">Delivery address</p>
+                                <p className="text-xs text-gray-500">Add address</p>
+                              </div>
+                            </div>
+                            <RiArrowRightSLine size={16} className="text-gray-400 flex-shrink-0" />
+                          </div>
+                          <div className="border-t border-gray-200 pt-3 space-y-1.5">
+                            <div className="flex justify-between text-xs">
+                              <span className="text-gray-600">Subtotal</span>
+                              <span className="text-gray-900">$24.99</span>
+                            </div>
+                            <div className="flex justify-between text-xs">
+                              <span className="text-gray-600">Shipping</span>
+                              <span className="text-gray-900">Free</span>
+                            </div>
+                            <div className="flex justify-between text-xs">
+                              <span className="text-gray-600">Estimated tax</span>
+                              <span className="text-gray-900">$2.12</span>
+                            </div>
+                            <div className="flex justify-between items-baseline pt-2">
+                              <div>
+                                <p className="text-sm font-semibold text-gray-900">Pay</p>
+                                <p className="text-xs text-gray-500">Total with estimated tax</p>
+                              </div>
+                              <span className="text-lg font-bold text-gray-900">$27.11</span>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={handlePayNowClick}
+                            disabled={isPayButtonLoading}
+                            className="w-full py-3 bg-gray-900 hover:bg-gray-800 active:scale-[0.98] active:bg-gray-800 active:shadow-inner text-white text-sm font-semibold rounded-lg transition-all duration-150 disabled:opacity-90 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                            style={{
+                              boxShadow: '0 0 0 1px rgba(255,255,255,0.06), 0 0 14px 2px rgba(34, 197, 94, 0.28), 0 0 22px 6px rgba(59, 130, 246, 0.22)'
+                            }}
+                          >
+                            {isPayButtonLoading ? (
+                              <>
+                                <RiLoader4Fill size={18} className="animate-spin flex-shrink-0" />
+                                <span>Working on it</span>
+                              </>
+                            ) : (
+                              'Pay now'
+                            )}
+                          </button>
+                        </div>
+                      ) : showPurchaseComplete ? (
+                        <div className="space-y-3">
+                          <div className="bg-white border border-gray-200 rounded-xl shadow-sm overflow-hidden">
+                            <div className="p-4 flex items-start gap-3">
+                              <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                                <RiCheckLine size={22} className="text-green-600" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="text-base font-semibold text-gray-900">Purchase complete</h3>
+                              </div>
+                            </div>
+                            <div className="px-4 pb-3 flex gap-3">
+                              <img src="/asam on table3.png" alt="Assam Breakfast Blend" className="w-14 h-14 rounded-lg object-cover flex-shrink-0" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-semibold text-gray-900">Assam Breakfast Blend</p>
+                                <p className="text-xs text-gray-500 mt-0.5">teagarage</p>
+                                <p className="text-xs text-gray-500">Quantity: 1</p>
+                              </div>
+                            </div>
+                            <div className="px-4 pb-3 space-y-1.5 text-xs border-t border-gray-100 pt-3">
+                              <div className="flex justify-between">
+                                <span className="text-gray-500">Estimated delivery</span>
+                                <span className="text-gray-900">Monday, March 17</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-500">Sold by</span>
+                                <span className="text-gray-900">teagarage</span>
+                              </div>
+                              <div className="flex justify-between">
+                                <span className="text-gray-500">Paid</span>
+                                <span className="text-gray-900 font-semibold">$27.11</span>
+                              </div>
+                            </div>
+                            <div className="p-3 border-t border-gray-100">
+                              <button type="button" className="w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-lg transition-colors">
+                                View details
+                              </button>
+                            </div>
+                          </div>
+                          <div className="bg-gray-100 rounded-xl p-3">
+                            <p className="text-xs text-gray-700 leading-relaxed">
+                              <span className="inline-block mr-1">✨</span>
+                              <strong>teagarage</strong> confirmed your order! You'll get a confirmation email soon. If you have questions, follow up with teagarage directly. You can view your order details anytime in Settings.
+                            </p>
+                          </div>
+                        </div>
+                      ) : showBuyItNowButton ? (
+                        /* Conversation (typed) + product image + Buy it now (with pressed state when AI “clicks”) */
+                        <>
+                          {conversationMessages.map((message) => (
+                            <div key={message.id} className="flex items-start gap-3 animate-fadeIn">
+                              <div className="w-6 h-6 flex items-center justify-center flex-shrink-0 rounded-full bg-green-100">
+                                <RiSparklingFill size={14} style={{ color: '#059669' }} />
+                              </div>
+                              <div className="flex-1 rounded-lg bg-gray-100 px-3 py-2 text-sm" style={{ color: '#374151', lineHeight: '1.6' }}>
+                                {message.content}
+                              </div>
+                            </div>
+                          ))}
+                          <div className="pt-2 space-y-3">
+                            <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                              <img src={ASSAM_IMAGE} alt="Assam Breakfast Blend" className="w-full h-28 object-cover" />
+                              <div className="p-2">
+                                <p className="text-xs font-semibold text-gray-900">Assam Breakfast Blend</p>
+                                <p className="text-xs text-gray-500">Fuel your day with this robust, full-bodied black tea.</p>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={handleBuyItNowClick}
+                              className={`w-full py-3 text-white text-sm font-semibold rounded-lg transition-all duration-150 ${
+                                showBuyButtonPressed
+                                  ? 'bg-gray-700 scale-[0.98] shadow-inner'
+                                  : 'bg-gray-900 hover:bg-gray-800 active:scale-[0.98] active:shadow-inner'
+                              }`}
+                              style={{
+                                boxShadow: showBuyButtonPressed ? undefined : '0 0 0 1px rgba(255,255,255,0.06), 0 0 14px 2px rgba(34, 197, 94, 0.28), 0 0 22px 6px rgba(59, 130, 246, 0.22)'
+                              }}
+                            >
+                              Buy it now
+                            </button>
+                          </div>
+                        </>
+                      ) : showPaySkeleton ? (
+                        /* Skeleton after button press, then pay section */
+                        <>
+                          {conversationMessages.map((message) => (
+                            <div key={message.id} className="flex items-start gap-3 animate-fadeIn">
+                              <div className="w-6 h-6 flex items-center justify-center flex-shrink-0 rounded-full bg-green-100">
+                                <RiSparklingFill size={14} style={{ color: '#059669' }} />
+                              </div>
+                              <div className="flex-1 text-sm" style={{ color: '#374151', lineHeight: '1.6' }}>
+                                {message.content}
+                              </div>
+                            </div>
+                          ))}
+                          <div className="space-y-3 animate-pulse pt-2">
+                            <div className="h-14 bg-gray-200 rounded-lg" />
+                            <div className="h-12 bg-gray-200 rounded-lg" />
+                            <div className="h-12 bg-gray-200 rounded-lg" />
+                            <div className="h-10 bg-gray-200 rounded-lg w-2/3" />
+                          </div>
+                        </>
+                      ) : showPurchaseSkeleton ? (
+                        /* 2s skeleton while "preparing" checkout */
+                        <>
+                          {conversationMessages.map((message) => (
+                            <div key={message.id} className="flex items-start gap-3 animate-fadeIn">
+                              <div className="w-6 h-6 flex items-center justify-center flex-shrink-0 rounded-full bg-green-100">
+                                <RiSparklingFill size={14} style={{ color: '#059669' }} />
+                              </div>
+                              <div className="flex-1 text-sm" style={{ color: '#374151', lineHeight: '1.6' }}>
+                                {message.content}
+                              </div>
+                            </div>
+                          ))}
+                          <div className="space-y-3 animate-pulse pt-2">
+                            <div className="h-12 bg-gray-200 rounded-lg"></div>
+                            <div className="h-12 bg-gray-200 rounded-lg"></div>
+                            <div className="h-10 bg-gray-200 rounded-lg w-2/3"></div>
+                          </div>
+                        </>
+                      ) : showConversationSkeleton ? (
                         /* Skeleton Loader */
                         <div className="space-y-4 animate-pulse">
                           <div className="flex items-start gap-3">
@@ -1816,6 +2184,9 @@ export default function SmartSuggestOrb({
                                 />
                               </div>
                                 <div className={`flex-1 text-sm ${isUserMessage ? 'text-right' : ''}`} style={{ color: '#374151', lineHeight: '1.6' }}>
+                                  {message.imageUrl && (
+                                    <img src={message.imageUrl} alt="Product" className="w-full max-h-28 object-cover rounded-lg mb-2" />
+                                  )}
                                   {message.content.includes('**') ? (
                                     /* Render markdown-style bold text */
                                     <div 

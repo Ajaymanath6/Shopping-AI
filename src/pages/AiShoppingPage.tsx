@@ -249,14 +249,14 @@ export default function AiShoppingPage() {
           <nav className="flex text-sm text-gray-500">
             <span>Home</span>
             <span className="mx-2">/</span>
-            <span className="text-gray-900">Premium Earl Grey Tea</span>
+            <span className="text-gray-900">Assam Breakfast Blend</span>
           </nav>
         </div>
       </div>
 
       {/* Main Shopify Product Page */}
       <div className="flex-1 bg-white">
-        <div className="max-w-7xl mx-auto p-6">
+        <div className="max-w-7xl mx-auto p-4">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             
             {/* Product Images - 7 columns */}
