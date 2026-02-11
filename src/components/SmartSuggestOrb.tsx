@@ -316,6 +316,7 @@ export default function SmartSuggestOrb({
   const [showPurchaseSkeleton, setShowPurchaseSkeleton] = useState(false)
   const [showBuyItNowButton, setShowBuyItNowButton] = useState(false)
   const [showBuyButtonPressed, setShowBuyButtonPressed] = useState(false)
+  const [isBuyButtonLoading, setIsBuyButtonLoading] = useState(false)
   const [showPaySkeleton, setShowPaySkeleton] = useState(false)
   const [isPayButtonLoading, setIsPayButtonLoading] = useState(false)
   const [showPurchaseComplete, setShowPurchaseComplete] = useState(false)
@@ -483,6 +484,7 @@ export default function SmartSuggestOrb({
     setShowPurchaseUI(false)
     setShowBuyItNowButton(false)
     setShowBuyButtonPressed(false)
+    setIsBuyButtonLoading(false)
     setShowPaySkeleton(false)
     setShowPurchaseSkeleton(false)
     setIsPayButtonLoading(false)
@@ -512,15 +514,23 @@ export default function SmartSuggestOrb({
             purchaseFlowTimeoutsRef.current.push(
               window.setTimeout(() => {
                 setShowBuyButtonPressed(false)
-                setShowBuyItNowButton(false)
-                setShowPaySkeleton(true)
+                setIsBuyButtonLoading(true)
                 scrollToBottom()
                 purchaseFlowTimeoutsRef.current.push(
                   window.setTimeout(() => {
-                    setShowPaySkeleton(false)
-                    setShowPurchaseUI(true)
+                    setIsBuyButtonLoading(false)
+                    setShowBuyItNowButton(false)
+                    setShowPaySkeleton(true)
                     scrollToBottom()
-                    schedulePayCompleteFlow()
+                    purchaseFlowTimeoutsRef.current.push(
+                      window.setTimeout(() => {
+                        setShowPaySkeleton(false)
+                        setShowPurchaseUI(true)
+                        scrollToBottom()
+                        setTimeout(() => scrollToBottom(), 150)
+                        schedulePayCompleteFlow()
+                      }, 2000)
+                    )
                   }, 2000)
                 )
               }, 450)
@@ -571,10 +581,25 @@ export default function SmartSuggestOrb({
       buyItNowClickTimeoutRef.current = null
     }
     setShowBuyButtonPressed(false)
-    setShowBuyItNowButton(false)
-    setShowPurchaseUI(true)
-    setTimeout(() => scrollToBottom(), 50)
-    schedulePayCompleteFlow()
+    setIsBuyButtonLoading(true)
+    scrollToBottom()
+    purchaseFlowTimeoutsRef.current.push(
+      window.setTimeout(() => {
+        setIsBuyButtonLoading(false)
+        setShowBuyItNowButton(false)
+        setShowPaySkeleton(true)
+        scrollToBottom()
+        purchaseFlowTimeoutsRef.current.push(
+          window.setTimeout(() => {
+            setShowPaySkeleton(false)
+            setShowPurchaseUI(true)
+            scrollToBottom()
+            setTimeout(() => scrollToBottom(), 150)
+            schedulePayCompleteFlow()
+          }, 2000)
+        )
+      }, 2000)
+    )
   }
 
   // Add typing message function
@@ -785,6 +810,7 @@ export default function SmartSuggestOrb({
     setShowPurchaseSkeleton(false)
     setShowBuyItNowButton(false)
     setShowBuyButtonPressed(false)
+    setIsBuyButtonLoading(false)
     setShowPaySkeleton(false)
     setIsPayButtonLoading(false)
     setShowPurchaseComplete(false)
@@ -901,6 +927,7 @@ export default function SmartSuggestOrb({
       setShowPurchaseSkeleton(false)
       setShowBuyItNowButton(false)
       setShowBuyButtonPressed(false)
+      setIsBuyButtonLoading(false)
       setShowPaySkeleton(false)
       setIsPayButtonLoading(false)
       setShowPurchaseComplete(false)
@@ -2098,16 +2125,26 @@ export default function SmartSuggestOrb({
                             <button
                               type="button"
                               onClick={handleBuyItNowClick}
-                              className={`w-full py-3 text-white text-sm font-semibold rounded-lg transition-all duration-150 ${
+                              disabled={showBuyButtonPressed || isBuyButtonLoading}
+                              className={`w-full py-3 text-white text-sm font-semibold rounded-lg transition-all duration-150 flex items-center justify-center gap-2 ${
                                 showBuyButtonPressed
                                   ? 'bg-gray-700 scale-[0.98] shadow-inner'
-                                  : 'bg-gray-900 hover:bg-gray-800 active:scale-[0.98] active:shadow-inner'
+                                  : isBuyButtonLoading
+                                    ? 'bg-gray-800'
+                                    : 'bg-gray-900 hover:bg-gray-800 active:scale-[0.98] active:shadow-inner'
                               }`}
                               style={{
-                                boxShadow: showBuyButtonPressed ? undefined : '0 0 0 1px rgba(255,255,255,0.06), 0 0 14px 2px rgba(34, 197, 94, 0.28), 0 0 22px 6px rgba(59, 130, 246, 0.22)'
+                                boxShadow: showBuyButtonPressed || isBuyButtonLoading ? undefined : '0 0 0 1px rgba(255,255,255,0.06), 0 0 14px 2px rgba(34, 197, 94, 0.28), 0 0 22px 6px rgba(59, 130, 246, 0.22)'
                               }}
                             >
-                              Buy it now
+                              {isBuyButtonLoading ? (
+                                <>
+                                  <RiLoader4Fill size={18} className="animate-spin flex-shrink-0" />
+                                  <span>Working on it</span>
+                                </>
+                              ) : (
+                                'Buy it now'
+                              )}
                             </button>
                           </div>
                         </>

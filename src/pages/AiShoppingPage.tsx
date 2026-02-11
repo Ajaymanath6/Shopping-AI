@@ -7,6 +7,7 @@ import { RiTruckLine, RiArrowGoBackLine, RiPlantLine, RiFacebookFill, RiTwitterX
 export default function AiShoppingPage() {
   const [showOrb, setShowOrb] = useState(false)
   const [hoverTimeout, setHoverTimeout] = useState<number | null>(null)
+  const hoverTimeoutRef = useRef<number | null>(null)
   const [isOrbExpanded, setIsOrbExpanded] = useState(false)
   
   // Idle state nudge
@@ -96,6 +97,14 @@ export default function AiShoppingPage() {
   
   // Selected product state - default to first Assam image
   const [selectedProductIndex, setSelectedProductIndex] = useState(0)
+  // Which product context to show in orb (main/thumb hover)
+  const [hoveredProductIndex, setHoveredProductIndex] = useState<number>(0)
+  // Orb on Other Products section
+  const [showOrbOther1, setShowOrbOther1] = useState(false)
+  const [showOrbOther2, setShowOrbOther2] = useState(false)
+  const [expandedOrbSource, setExpandedOrbSource] = useState<'main' | 'other1' | 'other2' | null>(null)
+  const hoverTimeoutOther1Ref = useRef<number | null>(null)
+  const hoverTimeoutOther2Ref = useRef<number | null>(null)
   
   // Fixed product for pricing and content - always show Assam Breakfast Blend
   const fixedProduct = {
@@ -117,47 +126,49 @@ export default function AiShoppingPage() {
   
   // Section orbs temporarily removed - see SECTION_ORBS_BACKUP.md
 
-  // Smart Suggest Orb hover handlers
-  const handleProductImageHover = () => {
-    // Mark that user is hovering over product image
+  // Smart Suggest Orb hover handlers (optional thumbnail index for context). Only one orb at a time.
+  const handleProductImageHover = (thumbIndex?: number) => {
+    setHoveredProductIndex(thumbIndex ?? selectedProductIndex)
     setIsHoveringAnySection(true)
-    
-    // Hide help orb when product orb might show
-    if (showHelpOrb && !helpOrbExpanded) {
-      setShowHelpOrb(false)
+    if (showHelpOrb && !helpOrbExpanded) setShowHelpOrb(false)
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
     }
-    
-    // Clear any existing timeout
-    if (hoverTimeout) {
-      clearTimeout(hoverTimeout)
-    }
-
-    // Set new timeout for 800 milliseconds  
-    const timeout = setTimeout(() => {
-      setShowOrb(true)
-    }, 800) // 0.8 second delay for intentional interaction
-    
-    setHoverTimeout(timeout)
-  }
-
-  const handleProductImageLeave = () => {
-    // Mark that user is no longer hovering over product image
-    setIsHoveringAnySection(false)
-    
-    // Clear timeout if user moves away before 2 seconds
     if (hoverTimeout) {
       clearTimeout(hoverTimeout)
       setHoverTimeout(null)
     }
-    // Only hide orb if it hasn't expanded into chat interface
-    if (!isOrbExpanded) {
-      setShowOrb(false)
+    const timeout = window.setTimeout(() => {
+      setShowOrbOther1(false)
+      setShowOrbOther2(false)
+      setShowOrb(true)
+    }, 800)
+    hoverTimeoutRef.current = timeout
+    setHoverTimeout(timeout)
+  }
+
+  const handleProductImageLeave = () => {
+    setIsHoveringAnySection(false)
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
     }
+    if (hoverTimeout) {
+      clearTimeout(hoverTimeout)
+      setHoverTimeout(null)
+    }
+    if (!isOrbExpanded) setShowOrb(false)
   }
 
   const handleCloseSmartOrb = () => {
     setShowOrb(false)
     setIsOrbExpanded(false)
+    setExpandedOrbSource(null)
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
+    }
     if (hoverTimeout) {
       clearTimeout(hoverTimeout)
       setHoverTimeout(null)
@@ -166,6 +177,47 @@ export default function AiShoppingPage() {
 
   const handleOrbExpanded = (expanded: boolean) => {
     setIsOrbExpanded(expanded)
+  }
+
+  const handleOtherProduct1Hover = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
+    }
+    setHoverTimeout(null)
+    if (hoverTimeoutOther1Ref.current) clearTimeout(hoverTimeoutOther1Ref.current)
+    hoverTimeoutOther1Ref.current = window.setTimeout(() => {
+      setShowOrb(false)
+      setShowOrbOther2(false)
+      setShowOrbOther1(true)
+    }, 800)
+  }
+  const handleOtherProduct1Leave = () => {
+    if (hoverTimeoutOther1Ref.current) {
+      clearTimeout(hoverTimeoutOther1Ref.current)
+      hoverTimeoutOther1Ref.current = null
+    }
+    if (expandedOrbSource !== 'other1') setShowOrbOther1(false)
+  }
+  const handleOtherProduct2Hover = () => {
+    if (hoverTimeoutRef.current) {
+      clearTimeout(hoverTimeoutRef.current)
+      hoverTimeoutRef.current = null
+    }
+    setHoverTimeout(null)
+    if (hoverTimeoutOther2Ref.current) clearTimeout(hoverTimeoutOther2Ref.current)
+    hoverTimeoutOther2Ref.current = window.setTimeout(() => {
+      setShowOrb(false)
+      setShowOrbOther1(false)
+      setShowOrbOther2(true)
+    }, 800)
+  }
+  const handleOtherProduct2Leave = () => {
+    if (hoverTimeoutOther2Ref.current) {
+      clearTimeout(hoverTimeoutOther2Ref.current)
+      hoverTimeoutOther2Ref.current = null
+    }
+    if (expandedOrbSource !== 'other2') setShowOrbOther2(false)
   }
 
   // Track if user is hovering over any interactive area
@@ -187,12 +239,12 @@ export default function AiShoppingPage() {
     // Set new idle timer - only if no other orbs are active and not hovering anywhere
     idleTimerRef.current = setTimeout(() => {
       // Only show help orb if no other orbs are active and not hovering on any section
-      const anyOrbActive = showOrb // Only product image orb now
+      const anyOrbActive = showOrb || showOrbOther1 || showOrbOther2
       if (!anyOrbActive && !isHoveringAnySection) {
         setShowHelpOrb(true)
       }
     }, 2000) // 2 seconds
-  }, [helpOrbExpanded, showOrb, isHoveringAnySection])
+  }, [helpOrbExpanded, showOrb, showOrbOther1, showOrbOther2, isHoveringAnySection])
 
 
   // Handle help orb close
@@ -265,7 +317,7 @@ export default function AiShoppingPage() {
                 {/* Main product image with Smart Suggest Orb */}
                 <div 
                   className="aspect-square bg-gray-100 rounded-lg overflow-hidden relative"
-                  onMouseEnter={handleProductImageHover}
+                  onMouseEnter={() => handleProductImageHover(selectedProductIndex)}
                   onMouseLeave={handleProductImageLeave}
                 >
                   <img 
@@ -278,7 +330,13 @@ export default function AiShoppingPage() {
                   <ProductOrb 
                     isVisible={showOrb}
                     onClose={handleCloseSmartOrb}
-                    onExpanded={handleOrbExpanded}
+                    onExpanded={(exp) => {
+                      handleOrbExpanded(exp)
+                      setExpandedOrbSource(exp ? 'main' : null)
+                    }}
+                    productName={products[hoveredProductIndex]?.name}
+                    productDescription={products[hoveredProductIndex]?.description}
+                    productImage={products[hoveredProductIndex]?.src}
                   />
                 </div>
                 
@@ -293,7 +351,7 @@ export default function AiShoppingPage() {
                           ? 'ring-2 ring-gray-800' 
                           : 'hover:ring-2 hover:ring-gray-300'
                       }`}
-                      onMouseEnter={handleProductImageHover}
+                      onMouseEnter={() => handleProductImageHover(idx)}
                       onMouseLeave={handleProductImageLeave}
                       title={product.label}
                     >
@@ -699,12 +757,27 @@ export default function AiShoppingPage() {
               </div>
             </div>
             
-            {/* Right side - Image (60%) */}
-            <div className="w-full lg:col-span-3 p-6">
+            {/* Right side - Image (60%) - Golden Darjeeling */}
+            <div 
+              className="w-full lg:col-span-3 p-6 relative"
+              onMouseEnter={handleOtherProduct1Hover}
+              onMouseLeave={handleOtherProduct1Leave}
+            >
               <img 
                 src="/asam on table3.png"
-                alt="Assam Breakfast Blend"
+                alt="Golden Darjeeling Muscatel"
                 className="w-full h-auto object-cover rounded-lg"
+              />
+              <ProductOrb
+                isVisible={showOrbOther1}
+                onClose={() => {
+                  setShowOrbOther1(false)
+                  setExpandedOrbSource(null)
+                }}
+                onExpanded={(exp) => setExpandedOrbSource(exp ? 'other1' : null)}
+                productName="Golden Darjeeling Muscatel"
+                productDescription="A rare first flush with notes of sweet street grapes, a joyride for your senses. 3 packets in one: Golden Darjeeling, Mint Revitalizer, and Spicy Masala."
+                productImage="/asam on table3.png"
               />
             </div>
               </div>
@@ -716,18 +789,33 @@ export default function AiShoppingPage() {
                   backgroundColor: 'rgba(139, 115, 85, 0.03)', // Calm brown/wood color with very light opacity
                 }}
               >
-                {/* Left side - Image (60%) */}
-                <div className="w-full lg:col-span-3 p-6">
+                {/* Left side - Image (60%) - Assam Breakfast Blend (3-pack) */}
+                <div 
+                  className="w-full lg:col-span-3 p-6 relative"
+                  onMouseEnter={handleOtherProduct2Hover}
+                  onMouseLeave={handleOtherProduct2Leave}
+                >
                   <img 
                     src="/asamontablfull.png"
-                    alt="Assam Breakfast Blend"
+                    alt="Assam Breakfast Blend (3-pack)"
                     className="w-full h-auto object-cover rounded-lg"
+                  />
+                  <ProductOrb
+                    isVisible={showOrbOther2}
+                    onClose={() => {
+                      setShowOrbOther2(false)
+                      setExpandedOrbSource(null)
+                    }}
+                    onExpanded={(exp) => setExpandedOrbSource(exp ? 'other2' : null)}
+                    productName="Assam Breakfast Blend (3-pack)"
+                    productDescription="A robust, full-bodied black tea, perfect for the open road."
+                    productImage="/asamontablfull.png"
                   />
                 </div>
                 
                 {/* Right side - Text (40%) */}
                 <div className="lg:col-span-2 p-6">
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Assam Breakfast Blend</h2>
+                  <h2 className="text-2xl font-semibold text-gray-900 mb-4">Assam Breakfast Blend (3-pack)</h2>
                   <p className="text-base text-gray-700 mb-6">
                     A robust, full-bodied black tea, perfect for the open road.
                   </p>

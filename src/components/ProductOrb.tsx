@@ -83,6 +83,9 @@ interface ProductOrbProps {
   isVisible: boolean
   onClose: () => void
   onExpanded?: (expanded: boolean) => void
+  productName?: string
+  productDescription?: string
+  productImage?: string
 }
 
 interface ConversationMessage {
@@ -97,8 +100,14 @@ interface ConversationMessage {
 export default function ProductOrb({
   isVisible,
   onClose,
-  onExpanded
+  onExpanded,
+  productName,
+  productDescription,
+  productImage
 }: ProductOrbProps) {
+  const placeholder = productName
+    ? `Ask about ${productName}...`
+    : 'Ask about this tea...'
   const [showTooltip, setShowTooltip] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [showSuggestions, setShowSuggestions] = useState(false)
@@ -163,14 +172,26 @@ export default function ProductOrb({
     }
   }, [isVisible, showTooltip, isExpanded])
 
-  // Handle orb click
+  // Handle orb click: when we have product context, show intro message + options
   const handleOrbClick = () => {
     setShowTooltip(false)
     setIsExpanded(true)
     onExpanded?.(true)
-    setTimeout(() => {
+    if (productName && productDescription) {
+      setIsInConversation(true)
+      setConversationMessages([{
+        id: `intro-${Date.now()}`,
+        type: 'result',
+        content: `You're looking at **${productName}**. ${productDescription}. How can I help?`,
+        timestamp: Date.now(),
+        isTyping: false,
+        icon: RiSparklingFill
+      }])
       setShowSuggestions(true)
-    }, 300)
+      setTimeout(() => scrollToBottom(), 100)
+    } else {
+      setTimeout(() => setShowSuggestions(true), 300)
+    }
   }
 
   // Handle close
@@ -589,76 +610,135 @@ export default function ProductOrb({
                       </div>
                     </motion.div>
                   )}
+                  {/* Product intro options - when we have productName and showSuggestions */}
+                  {showSuggestions && productName && productDescription && (
+                    <div className="space-y-3 pt-2">
+                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                        {productImage && (
+                          <img src={productImage} alt={productName} className="w-full h-28 object-cover" />
+                        )}
+                        <div className="p-3">
+                          <p className="text-sm font-semibold text-gray-900">{productName}</p>
+                          <p className="text-xs text-gray-600 mt-1">{productDescription}</p>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInputText(`Summarise ${productName}`)
+                            setTimeout(() => handleSendInput(), 300)
+                          }}
+                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left text-sm font-medium text-gray-900 border border-gray-200"
+                        >
+                          Summarise
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInputText(`I have a question about ${productName}`)
+                            setTimeout(() => handleSendInput(), 300)
+                          }}
+                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left text-sm font-medium text-gray-900 border border-gray-200"
+                        >
+                          Ask question
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInputText(`Help me buy ${productName}`)
+                            setTimeout(() => handleSendInput(), 300)
+                          }}
+                          className="w-full p-3 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors text-left text-sm font-medium border border-green-600"
+                        >
+                          Buy
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ) : showSuggestions && (
                 <div className="space-y-3">
-                  {/* Header with orb */}
-               
-                  
-                  <div className="grid grid-cols-1 gap-2">
-                    <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
-                      <img 
-                        src="https://images.unsplash.com/photo-1563822249548-9a72b6353cd1?w=40&h=40&fit=crop&crop=center" 
-                        alt="Nilgiri Frost Tea"
-                        className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900">Nilgiri 'Frost' Tea</div>
-                        <div className="text-xs text-gray-600">High-altitude blend - $18.99</div>
+                  {productName && productDescription ? (
+                    <>
+                      <div className="bg-white border border-gray-200 rounded-lg overflow-hidden">
+                        {productImage && (
+                          <img src={productImage} alt={productName} className="w-full h-28 object-cover" />
+                        )}
+                        <div className="p-3">
+                          <p className="text-sm font-semibold text-gray-900">{productName}</p>
+                          <p className="text-xs text-gray-600 mt-1">{productDescription}</p>
+                        </div>
                       </div>
-                      <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">
-                        Add to Cart
-                      </button>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
-                      <img 
-                        src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=40&h=40&fit=crop&crop=center" 
-                        alt="Munnar Cardamom Chai"
-                        className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900">Munnar Cardamom Chai</div>
-                        <div className="text-xs text-gray-600">Spiced blend - $22.50</div>
+                      <div className="grid grid-cols-1 gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInputText(`Summarise ${productName}`)
+                            setTimeout(() => handleSendInput(), 300)
+                          }}
+                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left text-sm font-medium text-gray-900 border border-gray-200"
+                        >
+                          Summarise
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInputText(`I have a question about ${productName}`)
+                            setTimeout(() => handleSendInput(), 300)
+                          }}
+                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left text-sm font-medium text-gray-900 border border-gray-200"
+                        >
+                          Ask question
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setInputText(`Help me buy ${productName}`)
+                            setTimeout(() => handleSendInput(), 300)
+                          }}
+                          className="w-full p-3 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors text-left text-sm font-medium border border-green-600"
+                        >
+                          Buy
+                        </button>
                       </div>
-                      <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">
-                        Add to Cart
-                      </button>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
-                      <img 
-                        src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=40&h=40&fit=crop&crop=center" 
-                        alt="Coorg Spiced Black Tea"
-                        className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900">Coorg Spiced Black Tea</div>
-                        <div className="text-xs text-gray-600">Bold & robust - $24.99</div>
+                    </>
+                  ) : (
+                    <div className="grid grid-cols-1 gap-2">
+                      <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
+                        <img src="https://images.unsplash.com/photo-1563822249548-9a72b6353cd1?w=40&h=40&fit=crop&crop=center" alt="Nilgiri Frost Tea" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-900">Nilgiri 'Frost' Tea</div>
+                          <div className="text-xs text-gray-600">High-altitude blend - $18.99</div>
+                        </div>
+                        <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">Add to Cart</button>
                       </div>
-                      <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">
-                        Add to Cart
-                      </button>
-                    </div>
-                    
-                    <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
-                      <img 
-                        src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=40&h=40&fit=crop&crop=center" 
-                        alt="Karnataka Filter Kaapi Style Tea"
-                        className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                      />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-sm font-medium text-gray-900">Karnataka 'Filter Kaapi' Style Tea</div>
-                        <div className="text-xs text-gray-600">Strong CTC blend - $19.99</div>
+                      <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
+                        <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=40&h=40&fit=crop&crop=center" alt="Munnar Cardamom Chai" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-900">Munnar Cardamom Chai</div>
+                          <div className="text-xs text-gray-600">Spiced blend - $22.50</div>
+                        </div>
+                        <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">Add to Cart</button>
                       </div>
-                      <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">
-                        Add to Cart
-                      </button>
+                      <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
+                        <img src="https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=40&h=40&fit=crop&crop=center" alt="Coorg Spiced Black Tea" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-900">Coorg Spiced Black Tea</div>
+                          <div className="text-xs text-gray-600">Bold & robust - $24.99</div>
+                        </div>
+                        <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">Add to Cart</button>
+                      </div>
+                      <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
+                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=40&h=40&fit=crop&crop=center" alt="Karnataka Filter Kaapi Style Tea" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm font-medium text-gray-900">Karnataka 'Filter Kaapi' Style Tea</div>
+                          <div className="text-xs text-gray-600">Strong CTC blend - $19.99</div>
+                        </div>
+                        <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">Add to Cart</button>
+                      </div>
                     </div>
-                  </div>
-                  
-                  {/* Footer text with action button */}
-                 
+                  )}
                 </div>
               )}
             </div>
@@ -672,7 +752,7 @@ export default function ProductOrb({
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                     onKeyPress={handleKeyPress}
-                    placeholder={isVoiceRecording ? "Listening..." : "Ask about this tea..."}
+                    placeholder={isVoiceRecording ? "Listening..." : placeholder}
                     className="w-full border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     style={{
                       paddingLeft: showVoiceAnimation ? '60px' : '12px',
