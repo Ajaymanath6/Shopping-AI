@@ -7,7 +7,10 @@ import {
   RiSendPlaneLine,
   RiBrainLine,
   RiUser3Line,
-  RiLoader2Line
+  RiLoader2Line,
+  RiFileTextLine,
+  RiQuestionLine,
+  RiExternalLinkLine
 } from '@remixicon/react'
 
 // Add fade-in animation styles and pulse animation
@@ -69,6 +72,26 @@ const fadeInAnimation = `
   width: 100%;
   height: 100%;
 }
+
+/* Lean, modern rounded scrollbar for chat - match other orb */
+.chat-scroll-area {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(156, 163, 175, 0.55) transparent;
+}
+.chat-scroll-area::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.chat-scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+.chat-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(156, 163, 175, 0.45);
+  border-radius: 9999px;
+}
+.chat-scroll-area::-webkit-scrollbar-thumb:hover {
+  background: rgba(156, 163, 175, 0.65);
+}
 `
 
 // Add the styles to the document head
@@ -86,6 +109,8 @@ interface ProductOrbProps {
   productName?: string
   productDescription?: string
   productImage?: string
+  /** Optional position for collapsed orb, e.g. 'bottom-4 left-4' */
+  orbPosition?: string
 }
 
 interface ConversationMessage {
@@ -103,7 +128,8 @@ export default function ProductOrb({
   onExpanded,
   productName,
   productDescription,
-  productImage
+  productImage,
+  orbPosition
 }: ProductOrbProps) {
   const placeholder = productName
     ? `Ask about ${productName}...`
@@ -118,7 +144,6 @@ export default function ProductOrb({
   const [isInConversation, setIsInConversation] = useState(false)
   const [isVoiceRecording, setIsVoiceRecording] = useState(false)
   const [showVoiceAnimation, setShowVoiceAnimation] = useState(false)
-  const [showProductDetails, setShowProductDetails] = useState(false)
   const [isAiResponding, setIsAiResponding] = useState(false)
   const voiceTimeoutRef = useRef<number | null>(null)
   const chatContentRef = useRef<HTMLDivElement>(null)
@@ -132,35 +157,42 @@ export default function ProductOrb({
     }
   }
 
-  // Voice response arrays
-  const DISCOVERY_VOICE_RESPONSES = [
-    "That's interesting. I usually drink strong filter coffee. Which of these Karnataka teas is the most robust and would give me that caffeine kick I'm used to?",
-    "I prefer my morning beverage very strong with milk. Can any of these Karnataka teas be brewed like traditional filter coffee?",
-    "I'm looking for something that can replace my daily coffee habit. Which Karnataka tea has the strongest, most full-bodied flavor?"
+  // Voice: discovery (no product) – continuous conversation about our products
+  const DISCOVERY_VOICE_USER = [
+    "I need something strong for the morning. What do you recommend?",
+    "Which one is best for drinking with milk?",
+    "I'm looking for a gift. What's special in your range?"
+  ]
+  const DISCOVERY_VOICE_AI = [
+    "For a strong morning cup, **Assam Breakfast Blend** is the one. It’s bold, malty, and holds up really well with milk—great as a wake-up tea. We do a 3-pack so you can try it over a few weeks. Want me to walk you through that one?",
+    "**Assam Breakfast Blend** and **Golden Darjeeling Muscatel** both work really well with milk. Assam is bolder and malty; Golden Darjeeling is a bit lighter with a sweet, muscatel note. If you like strong and classic, go Assam. For something a bit more delicate, try the Darjeeling.",
+    "**Golden Darjeeling Muscatel** makes a lovely gift—it’s a first flush with sweet, grapey notes and comes in a 3-pack (Golden Darjeeling, Mint Revitalizer, Spicy Masala). **Assam Breakfast Blend (3-pack)** is another solid option if they prefer a strong, everyday tea. I can tell you more about either."
   ]
 
-  const DISCOVERY_AI_RESPONSES = [
-    "Great question, Ajay! Based on your preference for a strong, traditional brew similar to filter 'kaapi', I highly recommend the **Karnataka 'Filter Kaapi' Style Tea**.\n\nIt's a robust CTC (Crush, Tear, Curl) black tea blend specifically designed to create a strong, dark liquor that stands up well to milk and sugar, much like your morning coffee.\n\nThe Coorg Spiced Black Tea is also quite strong, but it has added notes of local spices like cinnamon and clove, which gives it a different character.\n\nWould you like to add a 100g pack of the 'Filter Kaapi' Style Tea to your cart, or would you like to see its product details first?",
-    "Perfect choice for someone who loves strong brews! The **Karnataka 'Filter Kaapi' Style Tea** is exactly what you're looking for.\n\nThis special blend uses **bold CTC processing** to create small, dense leaves that release maximum strength and color when brewed. You can prepare it just like your filter coffee - strong decoction with milk and sugar.\n\nIt gives you that same robust caffeine kick (about 60-70mg per cup) and has that familiar full-bodied mouthfeel you're used to from traditional South Indian filter coffee.\n\nShall I add this to your cart? It's currently ₹399 for 250g, which makes about 125 strong cups."
+  // Voice: when user is on a product (productName set) – questions about that product, 3 Q&A pairs
+  const PRODUCT_VOICE_USER = [
+    "Is this one good for morning?",
+    "What's actually in this?",
+    "Would this work with milk?"
   ]
-
-  // Product details to show after AI response
-  const FILTER_KAAPI_PRODUCT = {
-    name: "Karnataka 'Filter Kaapi' Style Tea",
-    description: "Strong CTC black tea blend designed for traditional South Indian brewing",
-    price: "₹399",
-    weight: "250g",
-    servings: "125 cups",
-    caffeine: "60-70mg per cup",
-    image: "https://images.unsplash.com/photo-1571934811356-5cc061b6821f?w=300&h=200&fit=crop&crop=center",
-    features: [
-      "Bold CTC processing for maximum strength",
-      "Perfect with milk and sugar",
-      "Traditional South Indian flavor profile",
-      "High caffeine content",
-      "Premium Karnataka tea leaves"
+  const PRODUCT_VOICE_AI: Record<string, string[]> = {
+    'Golden Darjeeling Muscatel': [
+      "**Golden Darjeeling Muscatel** works well in the morning if you like something a bit lighter—sweet muscatel notes, not too heavy. For a stronger kick we’d suggest **Assam Breakfast Blend** instead.",
+      "This pack has **three variants**: Golden Darjeeling (first flush, sweet and floral), Mint Revitalizer, and Spicy Masala. So you get variety in one box—great for trying different styles.",
+      "Yes. It’s not as bold as Assam, so it works with a splash of milk or drunk black. If you prefer a really strong milk tea, **Assam Breakfast Blend** might suit you better."
+    ],
+    'Assam Breakfast Blend (3-pack)': [
+      "Yes—**Assam Breakfast Blend** is our go-to morning tea. Strong, malty, holds up well with milk. The 3-pack is ideal for daily use.",
+      "It’s **pure Assam**—bold, full-bodied black tea. The 3-pack is the same blend, so you get a good amount to last you a while.",
+      "Absolutely. It’s made for milk: strong enough to stand up to it. Most people drink it with milk and a bit of sugar, similar to a classic breakfast tea."
+    ],
+    'Premium Earl Grey Tea': [
+      "**Premium Earl Grey** is more of an afternoon or anytime tea—bergamot, smooth. For a strong morning cuppa we’d point you to **Assam Breakfast Blend**.",
+      "It’s **Earl Grey**—black tea with natural bergamot. Classic and versatile, good with or without milk.",
+      "Yes. It’s smooth with or without milk. If you like it creamy, it works; if you prefer black, the bergamot still comes through nicely."
     ]
   }
+  const PRODUCT_VOICE_AI_DEFAULT = "This one’s a solid pick from our range. For a strong morning tea try **Assam Breakfast Blend**; for something lighter and sweeter, **Golden Darjeeling Muscatel** is great. Want details on either?"
 
   // Auto-show tooltip after appearing
   useEffect(() => {
@@ -202,7 +234,6 @@ export default function ProductOrb({
     setIsInConversation(false)
     setConversationMessages([])
     setInputText('')
-    setShowProductDetails(false)
     onExpanded?.(false)
     onClose()
   }
@@ -225,12 +256,16 @@ export default function ProductOrb({
       voiceTimeoutRef.current = null
     }
 
-    // Pick random voice response
-    const randomIndex = Math.floor(Math.random() * DISCOVERY_VOICE_RESPONSES.length)
-    const randomResponse = DISCOVERY_VOICE_RESPONSES[randomIndex]
-    const aiResponse = DISCOVERY_AI_RESPONSES[randomIndex] || DISCOVERY_AI_RESPONSES[0]
-    
-    setInputText(randomResponse) // Show user input in input box first
+    // Pick voice exchange: product context (this product) or discovery (our range)
+    const randomIndex = Math.floor(Math.random() * (productName ? PRODUCT_VOICE_USER : DISCOVERY_VOICE_USER).length)
+    const userMsg = productName
+      ? PRODUCT_VOICE_USER[randomIndex]
+      : DISCOVERY_VOICE_USER[randomIndex]
+    const aiResponse = productName
+      ? (PRODUCT_VOICE_AI[productName]?.[randomIndex] ?? PRODUCT_VOICE_AI_DEFAULT)
+      : DISCOVERY_VOICE_AI[randomIndex]
+
+    setInputText(userMsg) // Show user input in input box first
     
     // After delay, move to conversation
     setTimeout(() => {
@@ -240,7 +275,7 @@ export default function ProductOrb({
       const userMessage: ConversationMessage = {
         id: `user-${Date.now()}`,
         type: 'result',
-        content: randomResponse.trim(),
+        content: userMsg.trim(),
         timestamp: Date.now(),
         isTyping: false,
         icon: RiUser3Line
@@ -306,13 +341,6 @@ export default function ProductOrb({
             : msg
         ))
         setIsAiResponding(false)
-        
-        // Check if this response mentions "Filter Kaapi" and show product details
-        if (content.includes("Filter Kaapi") && content.includes("cart")) {
-          setTimeout(() => {
-            setShowProductDetails(true)
-          }, 1000) // Show product details 1 second after AI response finishes
-        }
       }
     }
     
@@ -366,7 +394,7 @@ export default function ProductOrb({
         className={`absolute pointer-events-auto z-50 ${
           isExpanded 
             ? 'fixed top-4 right-4' // Fixed positioning for expanded state to "hover" 
-            : 'top-3 right-3'      // Absolute positioning for collapsed state
+            : (orbPosition || 'top-3 right-3')  // Absolute positioning for collapsed state
         }`}
         initial={{ opacity: 0, scale: 0.3 }}
         animate={{ 
@@ -473,7 +501,7 @@ export default function ProductOrb({
                       whiteSpace: 'nowrap'
                     }}
                     onClick={() => {
-                      setInputText("Show me the Karnataka tea collection")
+                      setInputText(productName ? `Tell me about ${productName}` : "Show me your tea collection")
                       handleOrbClick()
                       setTimeout(() => {
                         handleSendInput()
@@ -481,7 +509,7 @@ export default function ProductOrb({
                     }}
                   >
                      <p className="text-xs font-medium text-gray-900 leading-tight">
-                       Hey Ajay, find some tea blends from Karnataka
+                       {productName ? `Ask about ${productName}` : "Hey Ajay, need help with tea?"}
                      </p>
                     
                     {/* Tooltip Arrow - Points right toward orb */}
@@ -542,7 +570,7 @@ export default function ProductOrb({
             </div>
 
             {/* Chat content area */}
-            <div ref={chatContentRef} className="flex-1 overflow-auto p-4 space-y-3">
+            <div ref={chatContentRef} className="chat-scroll-area flex-1 overflow-auto p-4 space-y-3">
               {isInConversation ? (
                 // Conversation Mode: Show user messages and AI responses
                 <div className="space-y-3">
@@ -586,30 +614,6 @@ export default function ProductOrb({
                     )
                   })}
                   
-                  {/* Product Details Section - Show after AI mentions Filter Kaapi */}
-                  {showProductDetails && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5 }}
-                      className="mt-3"
-                    >
-                      <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
-                        <img 
-                          src={FILTER_KAAPI_PRODUCT.image}
-                          alt={FILTER_KAAPI_PRODUCT.name}
-                          className="w-10 h-10 rounded-lg object-cover flex-shrink-0"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900">{FILTER_KAAPI_PRODUCT.name}</div>
-                          <div className="text-xs text-gray-600">Strong CTC blend - {FILTER_KAAPI_PRODUCT.price}</div>
-                        </div>
-                        <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">
-                          Add to Cart
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
                   {/* Product intro options - when we have productName and showSuggestions */}
                   {showSuggestions && productName && productDescription && (
                     <div className="space-y-3 pt-2">
@@ -629,9 +633,10 @@ export default function ProductOrb({
                             setInputText(`Summarise ${productName}`)
                             setTimeout(() => handleSendInput(), 300)
                           }}
-                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left text-sm font-medium text-gray-900 border border-gray-200"
+                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium text-gray-900 border border-gray-200 flex items-center justify-center gap-2"
                         >
-                          Summarise
+                          <RiFileTextLine size={16} className="flex-shrink-0" />
+                          <span>Summarise</span>
                         </button>
                         <button
                           type="button"
@@ -639,20 +644,55 @@ export default function ProductOrb({
                             setInputText(`I have a question about ${productName}`)
                             setTimeout(() => handleSendInput(), 300)
                           }}
-                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left text-sm font-medium text-gray-900 border border-gray-200"
+                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium text-gray-900 border border-gray-200 flex items-center justify-center gap-2"
                         >
-                          Ask question
+                          <RiQuestionLine size={16} className="flex-shrink-0" />
+                          <span>Ask question</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => {
-                            setInputText(`Help me buy ${productName}`)
+                            setInputText(`Visit ${productName}`)
                             setTimeout(() => handleSendInput(), 300)
                           }}
-                          className="w-full p-3 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors text-left text-sm font-medium border border-green-600"
+                          className="w-full p-3 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors text-sm font-medium border border-green-600 flex items-center justify-center gap-2"
                         >
-                          Buy
+                          <RiExternalLinkLine size={16} className="flex-shrink-0" />
+                          <span>Visit</span>
                         </button>
+                      </div>
+                      <div className="pt-2">
+                        <p className="text-xs font-medium text-gray-600 mb-2">Similar products</p>
+                        <div className="space-y-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInputText("Tell me about Assam Breakfast Blend (3-pack)")
+                              setTimeout(() => handleSendInput(), 300)
+                            }}
+                            className="w-full flex items-center gap-2 p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-left"
+                          >
+                            <img src="https://images.unsplash.com/photo-1563822249548-9a72b6353cd1?w=40&h=40&fit=crop&crop=center" alt="Assam" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm font-medium text-gray-900">Assam Breakfast Blend (3-pack)</div>
+                              <div className="text-xs text-gray-600">Strong morning tea</div>
+                            </div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInputText("Tell me about Nilgiri Frost Tea")
+                              setTimeout(() => handleSendInput(), 300)
+                            }}
+                            className="w-full flex items-center gap-2 p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-left"
+                          >
+                            <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=40&h=40&fit=crop&crop=center" alt="Nilgiri" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm font-medium text-gray-900">Nilgiri Frost Tea</div>
+                              <div className="text-xs text-gray-600">High-altitude blend</div>
+                            </div>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}
@@ -677,9 +717,10 @@ export default function ProductOrb({
                             setInputText(`Summarise ${productName}`)
                             setTimeout(() => handleSendInput(), 300)
                           }}
-                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left text-sm font-medium text-gray-900 border border-gray-200"
+                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium text-gray-900 border border-gray-200 flex items-center justify-center gap-2"
                         >
-                          Summarise
+                          <RiFileTextLine size={16} className="flex-shrink-0" />
+                          <span>Summarise</span>
                         </button>
                         <button
                           type="button"
@@ -687,20 +728,55 @@ export default function ProductOrb({
                             setInputText(`I have a question about ${productName}`)
                             setTimeout(() => handleSendInput(), 300)
                           }}
-                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-left text-sm font-medium text-gray-900 border border-gray-200"
+                          className="w-full p-3 rounded-lg hover:bg-gray-100 transition-colors text-sm font-medium text-gray-900 border border-gray-200 flex items-center justify-center gap-2"
                         >
-                          Ask question
+                          <RiQuestionLine size={16} className="flex-shrink-0" />
+                          <span>Ask question</span>
                         </button>
                         <button
                           type="button"
                           onClick={() => {
-                            setInputText(`Help me buy ${productName}`)
+                            setInputText(`Visit ${productName}`)
                             setTimeout(() => handleSendInput(), 300)
                           }}
-                          className="w-full p-3 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors text-left text-sm font-medium border border-green-600"
+                          className="w-full p-3 rounded-lg bg-green-600 hover:bg-green-700 text-white transition-colors text-sm font-medium border border-green-600 flex items-center justify-center gap-2"
                         >
-                          Buy
+                          <RiExternalLinkLine size={16} className="flex-shrink-0" />
+                          <span>Visit</span>
                         </button>
+                      </div>
+                      <div className="pt-2">
+                        <p className="text-xs font-medium text-gray-600 mb-2">Similar products</p>
+                        <div className="space-y-2">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInputText("Tell me about Assam Breakfast Blend (3-pack)")
+                              setTimeout(() => handleSendInput(), 300)
+                            }}
+                            className="w-full flex items-center gap-2 p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-left"
+                          >
+                            <img src="https://images.unsplash.com/photo-1563822249548-9a72b6353cd1?w=40&h=40&fit=crop&crop=center" alt="Assam" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm font-medium text-gray-900">Assam Breakfast Blend (3-pack)</div>
+                              <div className="text-xs text-gray-600">Strong morning tea</div>
+                            </div>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setInputText("Tell me about Nilgiri Frost Tea")
+                              setTimeout(() => handleSendInput(), 300)
+                            }}
+                            className="w-full flex items-center gap-2 p-2 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors text-left"
+                          >
+                            <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?w=40&h=40&fit=crop&crop=center" alt="Nilgiri" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                            <div className="flex-1 min-w-0">
+                              <div className="text-sm font-medium text-gray-900">Nilgiri Frost Tea</div>
+                              <div className="text-xs text-gray-600">High-altitude blend</div>
+                            </div>
+                          </button>
+                        </div>
                       </div>
                     </>
                   ) : (
@@ -730,10 +806,10 @@ export default function ProductOrb({
                         <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">Add to Cart</button>
                       </div>
                       <div className="flex items-center gap-2 p-2 bg-white border rounded-lg hover:bg-gray-50 transition-colors">
-                        <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=40&h=40&fit=crop&crop=center" alt="Karnataka Filter Kaapi Style Tea" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
+                        <img src="https://images.unsplash.com/photo-1563822249548-9a72b6353cd1?w=40&h=40&fit=crop&crop=center" alt="Assam Breakfast Blend" className="w-10 h-10 rounded-lg object-cover flex-shrink-0" />
                         <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-gray-900">Karnataka 'Filter Kaapi' Style Tea</div>
-                          <div className="text-xs text-gray-600">Strong CTC blend - $19.99</div>
+                          <div className="text-sm font-medium text-gray-900">Assam Breakfast Blend (3-pack)</div>
+                          <div className="text-xs text-gray-600">Strong morning tea - $24.99</div>
                         </div>
                         <button className="px-3 py-1.5 text-xs font-medium bg-green-600 hover:bg-green-700 text-white rounded-md transition-colors flex-shrink-0">Add to Cart</button>
                       </div>

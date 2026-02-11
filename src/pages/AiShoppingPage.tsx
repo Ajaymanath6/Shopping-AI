@@ -778,6 +778,7 @@ export default function AiShoppingPage() {
                 productName="Golden Darjeeling Muscatel"
                 productDescription="A rare first flush with notes of sweet street grapes, a joyride for your senses. 3 packets in one: Golden Darjeeling, Mint Revitalizer, and Spicy Masala."
                 productImage="/asam on table3.png"
+                orbPosition="bottom-4 left-4"
               />
             </div>
               </div>
